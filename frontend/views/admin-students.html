@@ -1,0 +1,125 @@
+<section id="students-page" class="spapp-section">
+    <h2>Student Management</h2>
+  
+    <div class="card p-3 mb-4 bg-light">
+      <h5>Add New Student</h5>
+      <input type="text" id="newStudentName" class="form-control mb-2" placeholder="Full Name">
+      <input type="text" id="newStudentId" class="form-control mb-2" placeholder="Student ID">
+      <input type="text" id="newStudentInfo" class="form-control mb-2" placeholder="Additional Info (e.g. Email, Address)">
+      <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+    </div>
+  
+    <div id="studentList" class="row"></div>
+  </section>
+  
+  <script>
+    const availableCourses = [
+      { id: 'CS101', name: 'Computer Science 101' },
+      { id: 'MATH201', name: 'Mathematics 201' },
+      { id: 'PHYS301', name: 'Physics 301' }
+    ];
+  
+    const students = [];
+  
+    function addStudent() {
+      const name = document.getElementById('newStudentName').value.trim();
+      const id = document.getElementById('newStudentId').value.trim();
+      const info = document.getElementById('newStudentInfo').value.trim();
+  
+      if (!name || !id) {
+        alert('Please enter both name and ID');
+        return;
+      }
+  
+      students.push({ name, id, info, courses: [] });
+  
+      document.getElementById('newStudentName').value = '';
+      document.getElementById('newStudentId').value = '';
+      document.getElementById('newStudentInfo').value = '';
+  
+      renderStudents();
+    }
+  
+    function renderStudents() {
+      const container = document.getElementById('studentList');
+      container.innerHTML = '';
+  
+      students.forEach((student, index) => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 mb-4';
+  
+        const courseList = student.courses.length > 0
+          ? student.courses.map((c, i) => `<li class="d-flex justify-content-between align-items-center">
+              ${c.name}
+              <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeCourseFromStudent(${index}, ${i})">Remove</button>
+            </li>`).join('')
+          : '<li>No courses assigned.</li>';
+  
+        const availableOptions = availableCourses
+          .filter(c => !student.courses.some(s => s.id === c.id))
+          .map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  
+        col.innerHTML = `
+          <div class="card p-3">
+            <h5>${student.name}</h5>
+            <p><strong>ID:</strong> ${student.id}</p>
+            <p><strong>Info:</strong> ${student.info || 'N/A'}</p>
+  
+            <div class="mb-2">
+              <label for="courseSelect${index}">Assign Course:</label>
+              <div class="d-flex">
+                <select class="form-select me-2" id="courseSelect${index}">
+                  <option value="">-- Select --</option>
+                  ${availableOptions}
+                </select>
+                <button class="btn btn-sm btn-success" onclick="assignCourseToStudent(${index})">Add</button>
+              </div>
+            </div>
+  
+            <ul class="list-group list-group-flush mb-2">${courseList}</ul>
+  
+            <div class="d-flex gap-2">
+              <button class="btn btn-warning btn-sm" onclick="editStudent(${index})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteStudent(${index})">Delete</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(col);
+      });
+    }
+  
+    function deleteStudent(index) {
+      if (confirm(`Delete student ${students[index].name}?`)) {
+        students.splice(index, 1);
+        renderStudents();
+      }
+    }
+  
+    function editStudent(index) {
+      const student = students[index];
+      const newName = prompt('Edit name:', student.name);
+      const newInfo = prompt('Edit info:', student.info);
+  
+      if (newName !== null) students[index].name = newName.trim();
+      if (newInfo !== null) students[index].info = newInfo.trim();
+  
+      renderStudents();
+    }
+  
+    function assignCourseToStudent(studentIndex) {
+      const select = document.getElementById(`courseSelect${studentIndex}`);
+      const selectedId = select.value;
+      if (!selectedId) return;
+  
+      const course = availableCourses.find(c => c.id === selectedId);
+      if (!course) return;
+  
+      students[studentIndex].courses.push(course);
+      renderStudents();
+    }
+  
+    function removeCourseFromStudent(studentIndex, courseIndex) {
+      students[studentIndex].courses.splice(courseIndex, 1);
+      renderStudents();
+    }
+  </script>  

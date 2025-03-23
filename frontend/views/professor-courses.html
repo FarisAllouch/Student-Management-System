@@ -1,0 +1,125 @@
+<section id="my-courses" class="spapp-section">
+    <h2>My Courses</h2>
+    <p>Manage your courses, attendance, and assign grades to students.</p>
+  
+    <div class="mb-3">
+      <label for="searchCourse" class="form-label">Search for a Course</label>
+      <input type="text" class="form-control" id="searchCourse" placeholder="Search by course name..." oninput="searchCourses()">
+    </div>
+  
+    <div id="courseList">
+    </div>
+  
+    <div id="courseDetailsForm" style="display:none;">
+      <h6>Assign Grades and Attendance</h6>
+  
+      <div class="mb-3">
+        <label for="searchStudent" class="form-label">Search for a Student</label>
+        <input type="text" class="form-control" id="searchStudent" placeholder="Search by student name..." oninput="searchStudents()">
+      </div>
+  
+      <div class="mb-3">
+        <label for="selectStudent" class="form-label">Select Student</label>
+        <select class="form-select" id="selectStudent">
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label for="attendance" class="form-label">Attendance</label>
+        <div class="d-flex">
+          <input type="number" class="form-control" id="attendance" placeholder="Enter attendance percentage" min="0" max="100">
+          <span class="ms-2 align-self-center">%</span>
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="selectExam" class="form-label">Select Exam</label>
+        <select class="form-select" id="selectExam">
+          <option value="final_exam">Final Exam</option>
+          <option value="midterm_exam">Midterm Exam</option>
+          <option value="assignment">Assignment</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label for="examGrade" class="form-label">Enter Grade</label>
+        <div class="d-flex">
+          <input type="number" class="form-control" id="examGrade" placeholder="Enter percentage" min="0" max="100">
+          <span class="ms-2 align-self-center">%</span>
+        </div>
+      </div>
+  
+      <button class="btn btn-primary mt-3" id="submitGrades">Submit</button>
+    </div>
+  </section>
+  
+  <script>
+    function searchCourses() {
+      const query = document.getElementById('searchCourse').value.toLowerCase();
+      const courseList = [
+        { name: 'Computer Science 101', id: 'CS101' },
+        { name: 'Mathematics 201', id: 'MATH201' },
+        { name: 'Physics 301', id: 'PHYS301' },
+      ];
+  
+      const filteredCourses = courseList.filter(course =>
+        course.name.toLowerCase().includes(query)
+      );
+  
+      const courseListDiv = document.getElementById('courseList');
+      courseListDiv.innerHTML = '';
+  
+      filteredCourses.forEach(course => {
+        const courseItem = document.createElement('div');
+        courseItem.classList.add('course-item');
+        courseItem.classList.add('mb-3');
+        courseItem.innerHTML = `
+          <button class="btn btn-outline-secondary w-100" onclick="selectCourse('${course.id}')">
+            ${course.name}
+          </button>
+        `;
+        courseListDiv.appendChild(courseItem);
+      });
+    }
+  
+    function searchStudents() {
+      const query = document.getElementById('searchStudent').value.toLowerCase();
+      const studentsList = [
+        { name: 'John Doe', id: 'student1' },
+        { name: 'Jane Smith', id: 'student2' },
+        { name: 'Alice Johnson', id: 'student3' },
+      ];
+  
+      const filteredStudents = studentsList.filter(student =>
+        student.name.toLowerCase().includes(query)
+      );
+  
+      const studentSelect = document.getElementById('selectStudent');
+      studentSelect.innerHTML = '';
+  
+      filteredStudents.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.id;
+        option.innerText = student.name;
+        studentSelect.appendChild(option);
+      });
+    }
+  
+    function selectCourse(courseId) {
+      document.getElementById('courseDetailsForm').style.display = 'block';
+      searchStudents();
+    }
+  
+    document.getElementById('submitGrades').addEventListener('click', function() {
+      const selectedStudent = document.getElementById('selectStudent').value;
+      const selectedExam = document.getElementById('selectExam').value;
+      const examGrade = document.getElementById('examGrade').value;
+      const attendance = document.getElementById('attendance').value;
+  
+      console.log(`Student: ${selectedStudent}`);
+      console.log(`Exam: ${selectedExam}`);
+      console.log(`Grade: ${examGrade}`);
+      console.log(`Attendance: ${attendance}`);
+    });
+  </script>
+  

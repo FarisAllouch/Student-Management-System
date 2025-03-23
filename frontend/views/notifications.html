@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">Notifications</h5>
+          </div>
+          <div class="card-body">
+            <ul id="notificationsList" class="list-group">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const notificationsData = [
+      {
+        title: "New Assignment Posted",
+        description: "A new assignment has been posted for your Mathematics 101 course. Please review the details.",
+        timestamp: "2025-03-23 10:30 AM"
+      },
+      {
+        title: "Course Registration Open",
+        description: "The course registration for the Fall 2025 semester is now open. Please select your courses.",
+        timestamp: "2025-03-20 3:00 PM"
+      },
+      {
+        title: "Upcoming Exam Reminder",
+        description: "Your upcoming Physics 101 exam is scheduled for March 25th. Please prepare accordingly.",
+        timestamp: "2025-03-18 8:00 AM"
+      },
+      {
+        title: "New Grade Available",
+        description: "Your grade for the Computer Science 101 course has been updated. Please check your grade portal.",
+        timestamp: "2025-03-15 5:15 PM"
+      }
+    ];
+  
+    $(document).ready(function() {
+      notificationsData.forEach(notification => {
+        const notificationItem = `
+          <li class="list-group-item">
+            <h5 class="mb-1">${notification.title}</h5>
+            <p class="mb-1">${notification.description}</p>
+            <small class="text-muted">${notification.timestamp}</small>
+          </li>
+        `;
+        $("#notificationsList").append(notificationItem);
+      });
+    });
+  </script>
