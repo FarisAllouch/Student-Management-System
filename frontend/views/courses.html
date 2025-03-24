@@ -1,0 +1,97 @@
+<div class="container-fluid">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">Select Academic Year and Semester</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="academicYear" class="form-label">Academic Year</label>
+              <select class="form-select" id="academicYear">
+                <option value="2024-2025">2024-2025</option>
+                <option value="2023-2024">2023-2024</option>
+                <option value="2022-2023">2022-2023</option>
+              </select>
+            </div>
+  
+            <div class="mb-3">
+              <label for="semester" class="form-label">Semester</label>
+              <select class="form-select" id="semester">
+                <option value="fall">Fall</option>
+                <option value="spring">Spring</option>
+              </select>
+            </div>
+  
+            <button id="loadCourses" class="btn btn-primary w-100">Load Courses</button>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-dark text-white">
+            <h5 class="card-title mb-0">Registered Courses</h5>
+          </div>
+          <div class="card-body">
+            <ul id="coursesList" class="list-group">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const coursesData = {
+      "2024-2025": {
+        fall: [
+          { name: "Mathematics 101", instructor: "Dr. John Smith" },
+          { name: "Physics 101", instructor: "Prof. Alice White" },
+          { name: "Computer Science 101", instructor: "Dr. James Brown" }
+        ],
+        spring: [
+          { name: "Economics 101", instructor: "Dr. Emma Green" },
+          { name: "Biology 101", instructor: "Prof. Michael Black" }
+        ]
+      },
+      "2023-2024": {
+        fall: [
+          { name: "Statistics 101", instructor: "Dr. Sarah Blue" },
+          { name: "Chemistry 101", instructor: "Prof. Peter Grey" }
+        ],
+        spring: [
+          { name: "Psychology 101", instructor: "Dr. Linda White" },
+          { name: "History 101", instructor: "Prof. Thomas Yellow" }
+        ]
+      },
+      "2022-2023": {
+        fall: [
+          { name: "Philosophy 101", instructor: "Dr. Mark Red" },
+          { name: "Literature 101", instructor: "Prof. Mary Pink" }
+        ],
+        spring: [
+          { name: "Sociology 101", instructor: "Dr. George Brown" }
+        ]
+      }
+    };
+  
+    $("#loadCourses").click(function() {
+      const selectedYear = $("#academicYear").val();
+      const selectedSemester = $("#semester").val();
+      
+      const selectedCourses = coursesData[selectedYear][selectedSemester];
+      
+      $("#coursesList").empty();
+  
+      selectedCourses.forEach(course => {
+        const courseItem = `
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            ${course.name} 
+            <span class="badge bg-secondary">${course.instructor}</span>
+          </li>
+        `;
+        $("#coursesList").append(courseItem);
+      });
+    });
+  </script>
