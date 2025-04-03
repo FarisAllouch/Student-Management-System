@@ -1,7 +1,7 @@
 <section id="professors" class="spapp-section">
     <h2>Manage Professors</h2>
     <p>Add, edit, delete professors and assign courses to them.</p>
-  
+  <form action="">
     <div class="mb-4">
       <h5>Add New Professor</h5>
       <div class="d-flex gap-2 mb-2">
@@ -9,8 +9,9 @@
         <input type="text" id="newProfessorId" class="form-control" placeholder="Professor ID">
         <input type="text" id="newProfessorInfo" class="form-control" placeholder="Additional Info (e.g. Email, Bio)">
       </div>
-      <button class="btn btn-success" onclick="addProfessor()">Add Professor</button>
+      <button type="submit" class="btn btn-success" onclick="addProfessor()">Add Professor</button>
     </div>
+  </form>
   
     <div id="professorList"></div>
   

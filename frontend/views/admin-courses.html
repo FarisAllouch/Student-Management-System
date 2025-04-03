@@ -7,19 +7,31 @@
       <input type="text" class="form-control" id="searchCourse" placeholder="Search by course name..." oninput="searchCourses()">
     </div>
   
-    <!-- ADD COURSE FORM -->
-    <div class="mb-4">
-      <h6>Add New Course</h6>
-      <div class="d-flex gap-2 mb-2">
-        <input type="text" class="form-control" id="newCourseName" placeholder="Course name">
-        <input type="text" class="form-control" id="newCourseId" placeholder="Course ID">
-      </div>
-      <button class="btn btn-success" onclick="addCourse()">Add Course</button>
+    <div id="addCourse">
+      <form id="addCourseForm">
+        <div class="mb-4">
+          <h6>Add New Course</h6>
+          <div class="d-flex gap-2 mb-2">
+            <input type="text" class="form-control" name="courseName" id="newCourseName" placeholder="Course name">
+            <input type="text" class="form-control" name="courseId" id="newCourseId" placeholder="Course ID">
+          </div>
+          <button type="submit" class="btn btn-success">Add Course</button>
+        </div>
+      </form>
     </div>
-  
-    <div id="courseList"></div>
-  
-    <div id="courseDetailsForm" style="display:none;">
+    
+    <div id="courseList">
+      <table id="tbl_courses" class="table">
+        <thead>
+          <tr>
+            <th data-name="courseName">Course Name</th>
+            <th data-name="courseId">Course ID</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+
+    <form id="courseDetailsForm" style="display:none;">
       <h6>Assign Grades and Attendance</h6>
   
       <div class="mb-3">
@@ -58,73 +70,38 @@
       </div>
   
       <button class="btn btn-primary mt-3" id="submitGrades">Submit</button>
-    </div>
-  </section>
+    </form>
+</section>
   
   <script>
-    let courseList = [
-      { name: 'Computer Science 101', id: 'CS101' },
-      { name: 'Mathematics 201', id: 'MATH201' },
-      { name: 'Physics 301', id: 'PHYS301' },
-    ];
-  
-    function renderCourseList(filteredCourses = courseList) {
-      const courseListDiv = document.getElementById('courseList');
-      courseListDiv.innerHTML = '';
-  
-      filteredCourses.forEach((course, index) => {
-        const courseItem = document.createElement('div');
-        courseItem.classList.add('mb-2');
-        courseItem.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-outline-secondary w-50 text-start" onclick="selectCourse('${course.id}')">
-              ${course.name}
-            </button>
-            <div class="d-flex gap-1">
-              <button class="btn btn-sm btn-warning" onclick="editCourse(${index})">Edit</button>
-              <button class="btn btn-sm btn-danger" onclick="deleteCourse(${index})">Delete</button>
-            </div>
-          </div>
-        `;
-        courseListDiv.appendChild(courseItem);
+
+    FormValidation.validate("#addCourseForm", {}, function(data) {
+      Utils.block_ui("#addCourse");
+
+      $.post(Constants.API_BASE_URL + "courses.php", JSON.stringify(data))
+        .done(function () {
+          Utils.unblock_ui("#addCourse");
+          toastr.success("You have successfully added the course.")
+         
+          Utils.get_datatable(
+            "tbl_courses",
+            Constants.API_BASE_URL + "courses.php",
+            [{ data: "courseName"}, { data: "courseId" }],
+            null,
+            function () {
+              console.log("CALLBACK FIRST");
+            }
+          );
+        })
+        .fail(function (xhr){
+          toastr.error(error);
+        });
       });
-    }
-  
+    
     function searchCourses() {
       const query = document.getElementById('searchCourse').value.toLowerCase();
       const filtered = courseList.filter(course => course.name.toLowerCase().includes(query));
       renderCourseList(filtered);
-    }
-  
-    function addCourse() {
-      const nameInput = document.getElementById('newCourseName');
-      const idInput = document.getElementById('newCourseId');
-      const name = nameInput.value.trim();
-      const id = idInput.value.trim();
-  
-      if (name && id) {
-        courseList.push({ name, id });
-        nameInput.value = '';
-        idInput.value = '';
-        renderCourseList();
-      } else {
-        alert('Please enter both course name and ID.');
-      }
-    }
-  
-    function editCourse(index) {
-      const newName = prompt('Edit course name:', courseList[index].name);
-      if (newName !== null && newName.trim() !== '') {
-        courseList[index].name = newName.trim();
-        renderCourseList();
-      }
-    }
-  
-    function deleteCourse(index) {
-      if (confirm(`Are you sure you want to delete "${courseList[index].name}"?`)) {
-        courseList.splice(index, 1);
-        renderCourseList();
-      }
     }
   
     function searchStudents() {
@@ -164,7 +141,5 @@
       console.log(`Attendance: ${attendance}`);
     });
   
-    // Initial render
-    renderCourseList();
   </script>
   
