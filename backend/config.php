@@ -11,4 +11,4 @@ define('DB_NAME', 'sisweb');
 define('DB_PORT', 3306);
 define('DB_USER','root');
 define('DB_PASSWORD', 'palestine');
-define('DB_HOST','127.0.0.1');
+define('DB_HOST','localhost');

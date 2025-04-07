@@ -1,3 +1,3 @@
 var Constants = {
-    API_BASE_URL: "http://localhost/api/public/v1/sample/"
+    API_BASE_URL: "http://localhost/FarisAllouch/Student-Management-System/backend/routes/"
 }
