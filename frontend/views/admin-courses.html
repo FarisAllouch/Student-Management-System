@@ -1,170 +1,121 @@
 <section id="my-courses" class="spapp-section">
-    <h2>My Courses</h2>
-    <p>Manage your courses, attendance, and assign grades to students.</p>
-  
-    <div class="mb-3">
-      <label for="searchCourse" class="form-label">Search for a Course</label>
-      <input type="text" class="form-control" id="searchCourse" placeholder="Search by course name..." oninput="searchCourses()">
-    </div>
-  
-    <!-- ADD COURSE FORM -->
-    <div class="mb-4">
-      <h6>Add New Course</h6>
-      <div class="d-flex gap-2 mb-2">
-        <input type="text" class="form-control" id="newCourseName" placeholder="Course name">
-        <input type="text" class="form-control" id="newCourseId" placeholder="Course ID">
-      </div>
-      <button class="btn btn-success" onclick="addCourse()">Add Course</button>
-    </div>
-  
-    <div id="courseList"></div>
-  
-    <div id="courseDetailsForm" style="display:none;">
-      <h6>Assign Grades and Attendance</h6>
-  
-      <div class="mb-3">
-        <label for="searchStudent" class="form-label">Search for a Student</label>
-        <input type="text" class="form-control" id="searchStudent" placeholder="Search by student name..." oninput="searchStudents()">
-      </div>
-  
-      <div class="mb-3">
-        <label for="selectStudent" class="form-label">Select Student</label>
-        <select class="form-select" id="selectStudent"></select>
-      </div>
-  
-      <div class="mb-3">
-        <label for="attendance" class="form-label">Attendance</label>
-        <div class="d-flex">
-          <input type="number" class="form-control" id="attendance" placeholder="Enter attendance percentage" min="0" max="100">
-          <span class="ms-2 align-self-center">%</span>
-        </div>
-      </div>
-  
-      <div class="mb-3">
-        <label for="selectExam" class="form-label">Select Exam</label>
-        <select class="form-select" id="selectExam">
-          <option value="final_exam">Final Exam</option>
-          <option value="midterm_exam">Midterm Exam</option>
-          <option value="assignment">Assignment</option>
-        </select>
-      </div>
-  
-      <div class="mb-3">
-        <label for="examGrade" class="form-label">Enter Grade</label>
-        <div class="d-flex">
-          <input type="number" class="form-control" id="examGrade" placeholder="Enter percentage" min="0" max="100">
-          <span class="ms-2 align-self-center">%</span>
-        </div>
-      </div>
-  
-      <button class="btn btn-primary mt-3" id="submitGrades">Submit</button>
-    </div>
-  </section>
-  
-  <script>
-    let courseList = [
-      { name: 'Computer Science 101', id: 'CS101' },
-      { name: 'Mathematics 201', id: 'MATH201' },
-      { name: 'Physics 301', id: 'PHYS301' },
-    ];
-  
-    function renderCourseList(filteredCourses = courseList) {
-      const courseListDiv = document.getElementById('courseList');
-      courseListDiv.innerHTML = '';
-  
-      filteredCourses.forEach((course, index) => {
-        const courseItem = document.createElement('div');
-        courseItem.classList.add('mb-2');
-        courseItem.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-outline-secondary w-50 text-start" onclick="selectCourse('${course.id}')">
-              ${course.name}
-            </button>
-            <div class="d-flex gap-1">
-              <button class="btn btn-sm btn-warning" onclick="editCourse(${index})">Edit</button>
-              <button class="btn btn-sm btn-danger" onclick="deleteCourse(${index})">Delete</button>
+  <h2>My Courses</h2>
+  <p>Manage your courses, attendance, and assign grades to students.</p>
+
+  <div class="mb-3">
+    <label for="searchCourse" class="form-label">Search for a Course</label>
+    <input type="text" class="form-control" id="searchCourse" placeholder="Search by course name..." oninput="searchCourses()">
+  </div>
+
+  <div id="addCourse">
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+      Add Course
+    </button>
+  </div>
+
+  <div id="courseList" class="mt-4">
+    <table id="tbl_courses" class="table">
+      <thead>
+        <tr>
+          <th data-name="action">Actions</th>
+          <th data-name="CourseName">Course Name</th>
+          <th data-name="id">Course ID</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="addCourseForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addCourseModalLabel">Add New Course</h5>
+          </div>
+
+          <div class="modal-body">
+            <input type="hidden" name="id" id="id" />
+
+            <div class="mb-3">
+              <label for="newCourseName" class="form-label">Course Name</label>
+              <input type="text" class="form-control" name="CourseName" id="newCourseName" placeholder="Course name" />
+            </div>
+
+            <div class="mb-3">
+              <label for="newCourseId" class="form-label">Course ID</label>
+              <input type="text" class="form-control" name="id" id="newCourseId" placeholder="Course ID" />
             </div>
           </div>
-        `;
-        courseListDiv.appendChild(courseItem);
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <form id="courseDetailsForm" style="display:none;">
+    <h6>Assign Grades and Attendance</h6>
+
+    <div class="mb-3">
+      <label for="searchStudent" class="form-label">Search for a Student</label>
+      <input type="text" class="form-control" id="searchStudent" placeholder="Search by student name..." oninput="searchStudents()">
+    </div>
+
+    <div class="mb-3">
+      <label for="selectStudent" class="form-label">Select Student</label>
+      <select class="form-select" id="selectStudent"></select>
+    </div>
+
+    <div class="mb-3">
+      <label for="attendance" class="form-label">Attendance</label>
+      <div class="d-flex">
+        <input type="number" class="form-control" id="attendance" placeholder="Enter attendance percentage" min="0" max="100">
+        <span class="ms-2 align-self-center">%</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="selectExam" class="form-label">Select Exam</label>
+      <select class="form-select" id="selectExam">
+        <option value="final_exam">Final Exam</option>
+        <option value="midterm_exam">Midterm Exam</option>
+        <option value="assignment">Assignment</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="examGrade" class="form-label">Enter Grade</label>
+      <div class="d-flex">
+        <input type="number" class="form-control" id="examGrade" placeholder="Enter percentage" min="0" max="100">
+        <span class="ms-2 align-self-center">%</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary mt-3" id="submitGrades">Submit</button>
+  </form>
+</section>
+
+<script>
+  CourseService.reload_courses_datatable();
+
+  FormValidation.validate("#addCourseForm", {}, function(data) {
+    Utils.block_ui("#addCourseModal .modal-content");
+
+    $.post(Constants.API_BASE_URL + "add_course.php", JSON.stringify(data))
+      .done(function () {
+        Utils.unblock_ui("#addCourseModal .modal-content");
+        toastr.success("You have successfully added the course.");
+        CourseService.reload_courses_datatable();
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
+        modal.hide();
+        document.getElementById("addCourseForm").reset();
+      })
+      .fail(function (xhr){
+        Utils.unblock_ui("#addCourseModal .modal-content");
+        toastr.error("Error: " + xhr.responseText);
       });
-    }
-  
-    function searchCourses() {
-      const query = document.getElementById('searchCourse').value.toLowerCase();
-      const filtered = courseList.filter(course => course.name.toLowerCase().includes(query));
-      renderCourseList(filtered);
-    }
-  
-    function addCourse() {
-      const nameInput = document.getElementById('newCourseName');
-      const idInput = document.getElementById('newCourseId');
-      const name = nameInput.value.trim();
-      const id = idInput.value.trim();
-  
-      if (name && id) {
-        courseList.push({ name, id });
-        nameInput.value = '';
-        idInput.value = '';
-        renderCourseList();
-      } else {
-        alert('Please enter both course name and ID.');
-      }
-    }
-  
-    function editCourse(index) {
-      const newName = prompt('Edit course name:', courseList[index].name);
-      if (newName !== null && newName.trim() !== '') {
-        courseList[index].name = newName.trim();
-        renderCourseList();
-      }
-    }
-  
-    function deleteCourse(index) {
-      if (confirm(`Are you sure you want to delete "${courseList[index].name}"?`)) {
-        courseList.splice(index, 1);
-        renderCourseList();
-      }
-    }
-  
-    function searchStudents() {
-      const query = document.getElementById('searchStudent').value.toLowerCase();
-      const studentsList = [
-        { name: 'John Doe', id: 'student1' },
-        { name: 'Jane Smith', id: 'student2' },
-        { name: 'Alice Johnson', id: 'student3' },
-      ];
-  
-      const filtered = studentsList.filter(s => s.name.toLowerCase().includes(query));
-      const studentSelect = document.getElementById('selectStudent');
-      studentSelect.innerHTML = '';
-  
-      filtered.forEach(student => {
-        const option = document.createElement('option');
-        option.value = student.id;
-        option.innerText = student.name;
-        studentSelect.appendChild(option);
-      });
-    }
-  
-    function selectCourse(courseId) {
-      document.getElementById('courseDetailsForm').style.display = 'block';
-      searchStudents();
-    }
-  
-    document.getElementById('submitGrades').addEventListener('click', function () {
-      const selectedStudent = document.getElementById('selectStudent').value;
-      const selectedExam = document.getElementById('selectExam').value;
-      const examGrade = document.getElementById('examGrade').value;
-      const attendance = document.getElementById('attendance').value;
-  
-      console.log(`Student: ${selectedStudent}`);
-      console.log(`Exam: ${selectedExam}`);
-      console.log(`Grade: ${examGrade}`);
-      console.log(`Attendance: ${attendance}`);
-    });
-  
-    // Initial render
-    renderCourseList();
-  </script>
-  
+  });
+</script>
