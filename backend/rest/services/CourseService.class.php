@@ -31,11 +31,6 @@ class CourseService {
     }
 
     public function edit_course($course) {
-        $id = $course['id'];
-        unset($course['id']);
-
-        $query = "UPDATE course SET CourseName = :CourseName, id = :id
-                  WHERE id = :id";
-        $this->course_dao->edit_course($id, $course);
+        return $this->course_dao->edit_course($course);
     }   
 }

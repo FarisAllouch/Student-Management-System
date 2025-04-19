@@ -19,7 +19,7 @@
         <tr>
           <th data-name="action">Actions</th>
           <th data-name="CourseName">Course Name</th>
-          <th data-name="id">Course ID</th>
+          <th data-name="CourseCode">Course Code</th>
         </tr>
       </thead>
     </table>
@@ -42,8 +42,8 @@
             </div>
 
             <div class="mb-3">
-              <label for="newCourseId" class="form-label">Course ID</label>
-              <input type="text" class="form-control" name="id" id="newCourseId" placeholder="Course ID" />
+              <label for="CourseCode" class="form-label">Course Code</label>
+              <input type="text" class="form-control" name="CourseCode" id="CourseCode" placeholder="Course Code" />
             </div>
           </div>
 
@@ -103,19 +103,23 @@
   FormValidation.validate("#addCourseForm", {}, function(data) {
     Utils.block_ui("#addCourseModal .modal-content");
 
-    $.post(Constants.API_BASE_URL + "add_course.php", JSON.stringify(data))
-      .done(function () {
+    $.ajax({
+      url: Constants.API_BASE_URL + "add_course.php",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function () {
         Utils.unblock_ui("#addCourseModal .modal-content");
         toastr.success("You have successfully added the course.");
         CourseService.reload_courses_datatable();
-
         const modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
         modal.hide();
         document.getElementById("addCourseForm").reset();
-      })
-      .fail(function (xhr){
+      },
+      error: function (xhr) {
         Utils.unblock_ui("#addCourseModal .modal-content");
         toastr.error("Error: " + xhr.responseText);
-      });
+      }
+    });
   });
 </script>
