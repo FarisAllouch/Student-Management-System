@@ -5,8 +5,8 @@ var CourseService = {
             Constants.API_BASE_URL + "get_courses.php",
             [
                 { data: "action"},
-                { data: "id"},
-                { data: "CourseName"}
+                { data: "CourseName"},
+                { data: "CourseCode"}
             ]
         );
     },
@@ -16,20 +16,30 @@ var CourseService = {
             'get_course.php?id=' + course_id,
             function (data) {
                 $('#addCourseModal').modal("toggle");
-                $("#addCourseForm input[name='id']").val(data.id);
+                $("#addCourseForm input[name='CourseCode']").val(data.CourseCode);
                 $("#addCourseForm input[name='CourseName']").val(data.CourseName);
             }
         )
+    },
+
+    open_add_course_modal : function () {
+        $('#addCourseModal').modal("toggle");
+        
+        $("#addCourseForm input[name='id']").val('');
+    
+        $("#addCourseForm input[name='CourseCode']").val('');
+        $("#addCourseForm input[name='CourseName']").val('');
     },
 
     delete_course : function (course_id) {
         if (confirm("Do you want to delete course with the id " + course_id + "?") == true) {
             RestClient.delete(
                 "delete_course.php?id=" + course_id,
+                null,
                 function(data) {
                     CourseService.reload_courses_datatable();
                 }
-            )
+            );
         }
     }
 };

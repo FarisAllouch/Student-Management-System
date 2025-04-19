@@ -23,7 +23,7 @@ class CourseDao extends BaseDao {
     public function get_courses_paginated($offset, $limit, $search, $order_column, $order_direction) {
         $query = "SELECT *
                   FROM course 
-                  WHERE LOWER(CourseName) LIKE CONCAT('%', :search, '%')
+                  WHERE CourseName LIKE CONCAT('%', :search, '%')
                   ORDER BY {$order_column} {$order_direction}
                   LIMIT {$offset}, {$limit}";
         return $this->query($query, [
@@ -47,12 +47,12 @@ class CourseDao extends BaseDao {
         );    
     }
 
-    public function edit_course($id, $course) {
-        $query = "UPDATE course SET CourseName = :CourseName, id = :id
-                  WHERE id = :id";
-        $this->execute($query, [
+    public function edit_course($course) {
+        $query = "UPDATE course SET CourseName = :CourseName, CourseCode = :CourseCode WHERE id = :id";
+        return $this->execute($query, [
             'CourseName' => $course['CourseName'],
-            'id' => $id
+            'CourseCode' => $course['CourseCode'],
+            'id' => $course['id']
         ]);
     }
 }
