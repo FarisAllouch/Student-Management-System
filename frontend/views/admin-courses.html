@@ -104,17 +104,21 @@
     Utils.block_ui("#addCourseModal .modal-content");
 
     $.ajax({
-      url: Constants.API_BASE_URL + "add_course.php",
+      url: Constants.API_BASE_URL + "courses/add",
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify(data),
       success: function () {
-        Utils.unblock_ui("#addCourseModal .modal-content");
-        toastr.success("You have successfully added the course.");
+      Utils.unblock_ui("#addCourseModal .modal-content");
+      toastr.success("You have successfully added the course.");
+
+      setTimeout(() => {
         CourseService.reload_courses_datatable();
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
-        modal.hide();
-        document.getElementById("addCourseForm").reset();
+      }, 500);
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
+      modal.hide();
+      document.getElementById("addCourseForm").reset();
       },
       error: function (xhr) {
         Utils.unblock_ui("#addCourseModal .modal-content");
