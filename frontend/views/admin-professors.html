@@ -1,165 +1,86 @@
 <section id="professors" class="spapp-section">
     <h2>Manage Professors</h2>
     <p>Add, edit, delete professors and assign courses to them.</p>
-  <form action="">
-    <div class="mb-4">
-      <h5>Add New Professor</h5>
-      <div class="d-flex gap-2 mb-2">
-        <input type="text" id="newProfessorName" class="form-control" placeholder="Professor Name">
-        <input type="text" id="newProfessorId" class="form-control" placeholder="Professor ID">
-        <input type="text" id="newProfessorInfo" class="form-control" placeholder="Additional Info (e.g. Email, Bio)">
-      </div>
-      <button type="submit" class="btn btn-success" onclick="addProfessor()">Add Professor</button>
+    <div id="addProfessor">
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProfessorModal">
+        Add Professor
+      </button>
     </div>
-  </form>
   
-    <div id="professorList"></div>
-  
-    <div id="assignCoursesModal" style="display: none;">
-      <h5 class="mt-4">Assign Courses to <span id="assignToName"></span></h5>
-      <div class="d-flex gap-2 mb-2">
-        <select id="availableCourses" class="form-select"></select>
-        <button class="btn btn-primary" onclick="assignCourseToProfessor()">Assign</button>
-      </div>
-      <ul id="assignedCoursesList" class="list-group mb-3"></ul>
+    <div id="professorList" class="mt-4">
+      <table id="tbl_professors" class="table">
+        <thead>
+          <tr>
+            <th data-name="action">Actions</th>
+            <th data-name="FullName">Full Name</th>
+            <th data-name="Email">Email</th>
+            <th data-name="Password">Password</th>
+          </tr>
+        </thead>
+      </table>
     </div>
-  </section>
   
-  <script>
-    const courseList = [
-      { name: 'Computer Science 101', id: 'CS101' },
-      { name: 'Mathematics 201', id: 'MATH201' },
-      { name: 'Physics 301', id: 'PHYS301' }
-    ];
-  
-    let professors = [];
-  
-    function renderProfessors() {
-      const container = document.getElementById('professorList');
-      container.innerHTML = '';
-  
-      professors.forEach((prof, index) => {
-        const card = document.createElement('div');
-        card.classList.add('card', 'mb-3');
-  
-        card.innerHTML = `
-          <div class="card-body">
-            <h5 class="card-title">${prof.name} (${prof.id})</h5>
-            <p class="card-text">
-              Courses: ${prof.courses.length > 0 ? prof.courses.map(c => c.name).join(', ') : 'None'}
-            </p>
-            <p class="card-text"><strong>Info:</strong> ${prof.info || 'No info provided'}</p>
-            <div class="d-flex gap-2">
-              <button class="btn btn-sm btn-primary" onclick="openAssignCourses(${index})">Assign Courses</button>
-              <button class="btn btn-sm btn-warning" onclick="editProfessor(${index})">Edit</button>
-              <button class="btn btn-sm btn-danger" onclick="deleteProfessor(${index})">Delete</button>
-              <button class="btn btn-sm btn-secondary" onclick="clearProfessorInfo(${index})">Clear Info</button>
+    <div class="modal fade" id="addProfessorModal" tabindex="-1" aria-labelledby="addProfessorModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="addProfessorForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addProfessorModalLabel">Add New Professor</h5>
             </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
   
-    function addProfessor() {
-        const name = document.getElementById('newProfessorName').value.trim();
-        const id = document.getElementById('newProfessorId').value.trim();
-        const info = document.getElementById('newProfessorInfo').value.trim();
-
-        if (!name || !id) {
-            alert('Please enter both name and ID');
-            return;
-        }
-
-        professors.push({ name, id, info, courses: [] });
-
-        document.getElementById('newProfessorName').value = '';
-        document.getElementById('newProfessorId').value = '';
-        document.getElementById('newProfessorInfo').value = '';
-
-        renderProfessors();
-    }   
-
+            <div class="modal-body">
+              <input type="hidden" name="id" id="id" />
   
-    function editProfessor(index) {
-        const prof = professors[index];
-        const newName = prompt('Edit professor name:', prof.name);
-        const newInfo = prompt('Edit professor info:', prof.info || '');
-
-        if (newName !== null) professors[index].name = newName.trim();
-        if (newInfo !== null) professors[index].info = newInfo.trim();
-
-        renderProfessors();
-    }
-    
-    function clearProfessorInfo(index) {
-        if (confirm(`Clear info for ${professors[index].name}?`)) {
-            professors[index].info = '';
-            renderProfessors();
-        }
-    }
+              <div class="mb-3">
+                <label for="newProfessorName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="FullName" id="newProfessorName" placeholder="Full Name" />
+              </div>
   
-    function deleteProfessor(index) {
-      if (confirm(`Delete professor ${professors[index].name}?`)) {
-        professors.splice(index, 1);
-        renderProfessors();
+              <div class="mb-3">
+                <label for="Email" class="form-label">Email</label>
+                <input type="text" class="form-control" name="Email" id="ProfessorEmail" placeholder="Email" />
+              </div>
+
+              <div class="mb-3">
+                <label for="ProfessorPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" name="Password" id="ProfessorPassword" placeholder="Password" />
+              </div>
+            </div>
+  
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  
+<script>
+  ProfessorService.reload_professors_datatable();
+  FormValidation.validate("#addProfessorForm", {}, function(data) {
+    Utils.block_ui("#addProfessorModal .modal-content");
+
+    $.ajax({
+      url: Constants.API_BASE_URL + "professors/add",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function () {
+      Utils.unblock_ui("#addProfessorModal .modal-content");
+      toastr.success("You have successfully added the professor.");
+
+      setTimeout(() => {
+        ProfessorService.reload_professors_datatable();
+      }, 500);
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('addProfessorModal'));
+      modal.hide();
+      document.getElementById("addProfessorForm").reset();
+      },
+      error: function (xhr) {
+        Utils.unblock_ui("#addProfessorModal .modal-content");
+        toastr.error("Error: " + xhr.responseText);
       }
-    }
-  
-    let selectedProfessorIndex = null;
-  
-    function openAssignCourses(index) {
-      selectedProfessorIndex = index;
-      const professor = professors[index];
-      document.getElementById('assignToName').innerText = professor.name;
-      document.getElementById('assignCoursesModal').style.display = 'block';
-  
-      const select = document.getElementById('availableCourses');
-      select.innerHTML = '';
-      courseList.forEach(course => {
-        const option = document.createElement('option');
-        option.value = course.id;
-        option.text = course.name;
-        select.appendChild(option);
-      });
-  
-      renderAssignedCourses();
-    }
-  
-    function assignCourseToProfessor() {
-      const selectedCourseId = document.getElementById('availableCourses').value;
-      const selectedCourse = courseList.find(c => c.id === selectedCourseId);
-      const professor = professors[selectedProfessorIndex];
-  
-      if (!professor.courses.some(c => c.id === selectedCourse.id)) {
-        professor.courses.push(selectedCourse);
-      }
-  
-      renderProfessors();
-      renderAssignedCourses();
-    }
-  
-    function renderAssignedCourses() {
-      const professor = professors[selectedProfessorIndex];
-      const list = document.getElementById('assignedCoursesList');
-      list.innerHTML = '';
-  
-      professor.courses.forEach((course, i) => {
-        const li = document.createElement('li');
-        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-        li.innerHTML = `
-          ${course.name}
-          <button class="btn btn-sm btn-outline-danger" onclick="removeAssignedCourse(${i})">Remove</button>
-        `;
-        list.appendChild(li);
-      });
-    }
-  
-    function removeAssignedCourse(courseIndex) {
-      professors[selectedProfessorIndex].courses.splice(courseIndex, 1);
-      renderProfessors();
-      renderAssignedCourses();
-    }
-  
-    renderProfessors();
-  </script>  
+    });
+  });
+</script>  

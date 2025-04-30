@@ -24,6 +24,7 @@ Flight::group('/courses', function() {
             $data['data'][$id]['action'] = '<div class="btn-group" role="group" aria-label="Actions">' .
                                                 '<button type="button" class="btn btn-warning" onclick="CourseService.open_edit_course_modal('. $course['id'] .')">Edit</button>' .
                                                 '<button type="button" class="btn btn-danger" onclick="CourseService.delete_course('. $course['id'] .')">Delete</button>' .
+                                                '<button type="button" class="btn btn-info" onclick="ExamService.manage_exams('.$course['id'] .')">Manage Exams</button>' .
                                             '</div>';
         }
     
