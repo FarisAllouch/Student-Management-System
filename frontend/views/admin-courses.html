@@ -2,11 +2,6 @@
   <h2>My Courses</h2>
   <p>Manage your courses, attendance, and assign grades to students.</p>
 
-  <div class="mb-3">
-    <label for="searchCourse" class="form-label">Search for a Course</label>
-    <input type="text" class="form-control" id="searchCourse" placeholder="Search by course name..." oninput="searchCourses()">
-  </div>
-
   <div id="addCourse">
     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
       Add Course
@@ -55,46 +50,46 @@
     </div>
   </div>
 
-  <form id="courseDetailsForm" style="display:none;">
-    <h6>Assign Grades and Attendance</h6>
-
-    <div class="mb-3">
-      <label for="searchStudent" class="form-label">Search for a Student</label>
-      <input type="text" class="form-control" id="searchStudent" placeholder="Search by student name..." oninput="searchStudents()">
-    </div>
-
-    <div class="mb-3">
-      <label for="selectStudent" class="form-label">Select Student</label>
-      <select class="form-select" id="selectStudent"></select>
-    </div>
-
-    <div class="mb-3">
-      <label for="attendance" class="form-label">Attendance</label>
-      <div class="d-flex">
-        <input type="number" class="form-control" id="attendance" placeholder="Enter attendance percentage" min="0" max="100">
-        <span class="ms-2 align-self-center">%</span>
+  <div class="modal fade" id="manageExamsModal" tabindex="-1" aria-labelledby="manageExamsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Exams for <span id="modalCourseName"></span></h5>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="id" />
+          
+          <table id="tbl_exams" class="table">
+            <thead>
+              <tr>
+                <th data-name="ExamName">Exam Name</th>
+                <th data-name="Weight">Weight (%)</th>
+                <th data-name="action">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+  
+          <hr />
+          <h6>Add New Exam</h6>
+          <form id="addExamForm">
+            <input type="hidden" name="CourseId" id="examCourseId" />
+            <input type="hidden" name="ExamId" id="examId" />
+            <div class="mb-3">
+              <label>Exam Name</label>
+              <input type="text" name="ExamName" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Weight (%)</label>
+              <input type="number" name="Weight" class="form-control" min="0" max="100" step="0.1" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Add Exam</button>
+          </form>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="mb-3">
-      <label for="selectExam" class="form-label">Select Exam</label>
-      <select class="form-select" id="selectExam">
-        <option value="final_exam">Final Exam</option>
-        <option value="midterm_exam">Midterm Exam</option>
-        <option value="assignment">Assignment</option>
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label for="examGrade" class="form-label">Enter Grade</label>
-      <div class="d-flex">
-        <input type="number" class="form-control" id="examGrade" placeholder="Enter percentage" min="0" max="100">
-        <span class="ms-2 align-self-center">%</span>
-      </div>
-    </div>
-
-    <button class="btn btn-primary mt-3" id="submitGrades">Submit</button>
-  </form>
 </section>
 
 <script>
@@ -126,4 +121,38 @@
       }
     });
   });
+
+  FormValidation.validate("#addExamForm", {}, function(data) {
+    event.preventDefault();
+
+    Utils.block_ui("#manageExamsModal .modal-content");
+
+    data.CourseId = $("#examCourseId").val();
+    data.ExamId = $("#examId").val() || '';
+
+    $.ajax({
+      url: Constants.API_BASE_URL + "exams/add",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function () {
+        Utils.unblock_ui("#manageExamsModal .modal-content");
+        toastr.success("You have successfully added the exam.");
+
+        const courseId = $("#examCourseId").val();
+
+        setTimeout(() => {
+          ExamService.reload_exams_datatable(courseId);
+        }, 500);
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('manageExamsModal'));
+        document.getElementById("addExamForm").reset();
+      },
+      error: function (xhr) {
+        Utils.unblock_ui("#manageExamsModal .modal-content");
+        toastr.error("Error: " + xhr.responseText);
+      }
+    });
+  });
+
 </script>
