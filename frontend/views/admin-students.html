@@ -61,6 +61,40 @@
     </div>
   </div>
 
+  <div class="modal fade" id="manageCoursesModal" tabindex="-1" aria-labelledby="manageCoursesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="assignCourseForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="manageCoursesModalLabel">Assign Course to Student</h5>
+          </div>
+  
+          <div class="modal-body">
+            <input type="hidden" name="StudentId" id="selectedStudentId" />
+  
+            <div class="mb-3">
+              <label for="unassignedCoursesSelect" class="form-label">Select Course</label>
+              <select class="form-select" name="CourseId" id="unassignedCoursesSelect" required>
+              </select>
+            </div>
+
+            <hr />
+
+            <div>
+              <label class="form-label">Assigned Courses</label>
+              <ul id="assignedCoursesList" class="list-group">
+              </ul>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Assign Course</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 <script>
 StudentService.reload_students_datatable();
 FormValidation.validate("#addStudentForm", {}, function(data) {
@@ -87,6 +121,46 @@ FormValidation.validate("#addStudentForm", {}, function(data) {
       Utils.unblock_ui("#addStudentModal .modal-content");
       toastr.error("Error: " + xhr.responseText);
     }
+  });
+});
+
+$('#assignCourseForm').on('submit', function(e){
+    e.preventDefault();
+
+    const studentId = $('#selectedStudentId').val();
+    const courseId = $('#unassignedCoursesSelect').val();
+    const courseName = $('#unassignedCoursesSelect option:selected').text();
+
+    RestClient.post('student-courses/add',{
+        StudentId: studentId,
+        CourseId: courseId
+    }, function() {
+        // Remove from unassigned list
+        $('#unassignedCoursesSelect option[value="' + courseId + '"]').remove();
+        
+        // Add to assigned list
+        $('#assignedCoursesList').append(`
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>${courseName}</span>
+                <button class="btn btn-sm btn-outline-danger remove-course-btn" data-id="${courseId}">Remove</button>
+            </li>
+        `);
+    });
+});
+
+$(document).on('click', '.remove-course-btn', function () {
+    const courseId = $(this).data('id');
+    const studentId = $('#selectedStudentId').val();
+    RestClient.delete(`student-courses/delete/${studentId}/${courseId}`);
+});
+
+// Update the table actions to include course management
+$('#tbl_students').on('draw.dt', function() {
+  $('.btn-group').each(function() {
+    const studentId = $(this).find('button').first().attr('onclick').match(/\d+/)[0];
+    $(this).append(`
+      <button type="button" class="btn btn-info" onclick="StudentService.manage_courses(${studentId})">Manage Courses</button>
+    `);
   });
 });
 </script>  

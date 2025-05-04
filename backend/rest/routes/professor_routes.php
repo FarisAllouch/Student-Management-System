@@ -23,6 +23,29 @@ Flight::group('/professors', function(){
         Flight::json(['message' => "You have successfully added the professor", 'data' => $professor]);
     });
 
+    /**
+     * @OA\Get(
+     *     path="/professors",
+     *     summary="Get all professors",
+     *     tags={"Professors"},
+     *     @OA\Parameter(
+     *         name="start",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="length",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of professors"
+     *     )
+     * )
+     */
     Flight::route('GET /', function() {
     
         $payload = Flight::request()->query;
@@ -42,6 +65,7 @@ Flight::group('/professors', function(){
             $data['data'][$id]['action'] = '<div class="btn-group" role="group" aria-label="Actions">' .
                                                 '<button type="button" class="btn btn-warning" onclick="ProfessorService.open_edit_professor_modal('. $professor['id'] .')">Edit</button>' .
                                                 '<button type="button" class="btn btn-danger" onclick="ProfessorService.delete_professor('. $professor['id'] .')">Delete</button>' .
+                                                '<button type="button" class="btn btn-info" onclick="ProfessorService.manage_courses('. $professor['id'] .')">Manage Courses</button>' .
                                             '</div>';
         }
     
@@ -55,6 +79,23 @@ Flight::group('/professors', function(){
         ], 200);
     });
     
+    /**
+     * @OA\Delete(
+     *     path="/professors/{id}",
+     *     summary="Delete professor",
+     *     tags={"Professors"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Professor deleted successfully"
+     *     )
+     * )
+     */
     Flight::route('DELETE /delete/@professor_id', function($professor_id) {
         
         if ($professor_id == NULL || $professor_id == '') {
@@ -65,6 +106,23 @@ Flight::group('/professors', function(){
         Flight::json(['message'=> "You have successfully deleted the professor!"]);
     });
     
+    /**
+     * @OA\Get(
+     *     path="/professors/{id}",
+     *     summary="Get professor by ID",
+     *     tags={"Professors"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Professor details"
+     *     )
+     * )
+     */
     Flight::route('GET /@professor_id', function($professor_id) {
         $professor = Flight::get('professor_service')->get_professor_by_id($professor_id);
     

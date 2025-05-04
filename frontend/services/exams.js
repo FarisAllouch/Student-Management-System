@@ -40,7 +40,6 @@ var ExamService = {
                 $("#addExamForm input[name='ExamId']").val(exam_id);
                 $("#addExamForm input[name='ExamName']").val(data.ExamName);
                 $("#addExamForm input[name='Weight']").val(data.Weight);
-                // Course ID remains unchanged from manage_exams
             }
         )
     }

@@ -20,40 +20,74 @@
       </table>
     </div>
   
-    <div class="modal fade" id="addProfessorModal" tabindex="-1" aria-labelledby="addProfessorModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form id="addProfessorForm">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addProfessorModalLabel">Add New Professor</h5>
-            </div>
-  
-            <div class="modal-body">
-              <input type="hidden" name="id" id="id" />
-  
-              <div class="mb-3">
-                <label for="newProfessorName" class="form-label">Full Name</label>
-                <input type="text" class="form-control" name="FullName" id="newProfessorName" placeholder="Full Name" />
-              </div>
-  
-              <div class="mb-3">
-                <label for="Email" class="form-label">Email</label>
-                <input type="text" class="form-control" name="Email" id="ProfessorEmail" placeholder="Email" />
-              </div>
+  <div class="modal fade" id="addProfessorModal" tabindex="-1" aria-labelledby="addProfessorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="addProfessorForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addProfessorModalLabel">Add New Professor</h5>
+          </div>
 
-              <div class="mb-3">
-                <label for="ProfessorPassword" class="form-label">Password</label>
-                <input type="password" class="form-control" name="Password" id="ProfessorPassword" placeholder="Password" />
-              </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" id="id" />
+
+            <div class="mb-3">
+              <label for="newProfessorName" class="form-label">Full Name</label>
+              <input type="text" class="form-control" name="FullName" id="newProfessorName" placeholder="Full Name" />
             </div>
-  
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Submit</button>
+
+            <div class="mb-3">
+              <label for="Email" class="form-label">Email</label>
+              <input type="text" class="form-control" name="Email" id="ProfessorEmail" placeholder="Email" />
             </div>
-          </form>
-        </div>
+
+            <div class="mb-3">
+              <label for="ProfessorPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" name="Password" id="ProfessorPassword" placeholder="Password" />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
+
+  <div class="modal fade" id="manageCoursesModal" tabindex="-1" aria-labelledby="manageCoursesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="assignCourseForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="manageCoursesModalLabel">Assign Course to Professor</h5>
+          </div>
+  
+          <div class="modal-body">
+            <input type="hidden" name="ProfessorId" id="selectedProfessorId" />
+  
+            <div class="mb-3">
+              <label for="unassignedCoursesSelect" class="form-label">Select Course</label>
+              <select class="form-select" name="CourseId" id="unassignedCoursesSelect" required>
+              </select>
+            </div>
+
+            <hr />
+
+            <div>
+              <label class="form-label">Assigned Courses</label>
+              <ul id="assignedCoursesList" class="list-group">
+              </ul>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Assign Course</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   
 <script>
   ProfessorService.reload_professors_datatable();
@@ -83,4 +117,35 @@
       }
     });
   });
+
+  $('#assignCourseForm').on('submit', function(e){
+    e.preventDefault();
+
+    const professorId = $('#selectedProfessorId').val();
+    const courseId = $('#unassignedCoursesSelect').val();
+    const courseName = $('#unassignedCoursesSelect option:selected').text();
+
+    RestClient.post('professor-courses/add',{
+        ProfessorId: professorId,
+        CourseId: courseId
+    }, function() {
+        // Remove from unassigned list
+        $('#unassignedCoursesSelect option[value="' + courseId + '"]').remove();
+        
+        // Add to assigned list
+        $('#assignedCoursesList').append(`
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>${courseName}</span>
+                <button class="btn btn-sm btn-outline-danger remove-course-btn" data-id="${courseId}">Remove</button>
+            </li>
+        `);
+    });
+  });
+
+  $(document).on('click', '.remove-course-btn', function () {
+    const courseId = $(this).data('id');
+    const professorId = $('#selectedProfessorId').val();
+    RestClient.delete(`professor-courses/delete/${professorId}/${courseId}`);
+  });
+
 </script>  
