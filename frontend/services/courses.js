@@ -34,6 +34,5 @@ var CourseService = {
                 }
             );
         }
-    },
-
+    }
 };

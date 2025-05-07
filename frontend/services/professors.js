@@ -35,5 +35,38 @@ var ProfessorService = {
                 }
             );
         }
+    },
+
+    manage_courses: function(professor_id) {
+        $('#selectedProfessorId').val(professor_id);
+    
+        RestClient.get('professor-courses/assigned/' + professor_id, function(data) {
+            const assignedCourseList = $('#assignedCoursesList');
+            assignedCourseList.empty();
+    
+            data.forEach(course => {
+                assignedCourseList.append(`
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        ${course.CourseName}
+                        <button class="btn btn-sm btn-outline-danger remove-course-btn" data-id="${course.id}">Remove</button>
+                    </li>
+                `);
+            });
+        });
+    
+        RestClient.get('professor-courses/unassigned/' + professor_id, function(data) {
+            const select = $('#unassignedCoursesSelect');
+            select.empty();
+    
+            if (data.length === 0) {
+                select.append('<option disabled> No unassigned courses available!</option>');
+            } else {
+                data.forEach(course => {
+                    select.append(`<option value="${course.id}">${course.CourseName}</option>`);
+                });
+            }
+    
+            $('#manageCoursesModal').modal("toggle");
+        });
     }
 };
