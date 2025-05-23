@@ -54,4 +54,20 @@ class StudentDao extends BaseDao {
             'id' => $student['id']
         ]);
     }
+
+    public function get_course_students($course_id) {
+        $query = "SELECT s.*, 
+                 GROUP_CONCAT(CONCAT(cg.Grade, '% (', (cg.Grade * ce.Weight / 100), ' points)') SEPARATOR ', ') as Grades,
+                 SUM(cg.Grade * ce.Weight / 100) as TotalPoints,
+                 SUM(ce.Weight) as TotalWeight
+                 FROM student s
+                 JOIN studentcourse sc ON s.id = sc.StudentId
+                 LEFT JOIN coursegrade cg ON cg.StudentCourseId = sc.id
+                 LEFT JOIN courseexams ce ON cg.ExamId = ce.ExamId
+                 WHERE sc.CourseID = :course_id
+                 GROUP BY s.id";
+        return $this->query($query, [
+            'course_id' => $course_id
+        ]);
+    }
 }

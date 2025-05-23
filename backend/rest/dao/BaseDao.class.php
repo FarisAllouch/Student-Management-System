@@ -58,6 +58,7 @@ class BaseDao {
         $query .= ")";
         $statement = $this->connection->prepare($query);
         $statement->execute($entity);
+        $entity['id'] = $this->connection->lastInsertId();
         return $entity;
     }
 }

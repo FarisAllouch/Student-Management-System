@@ -12,6 +12,14 @@ class ExamService {
         return $this->exam_dao->get_exams($course_id);
     }
 
+    public function get_exams_without_grades($student_id, $course_id) {
+        return $this->exam_dao->get_exams_without_grades($student_id, $course_id);
+    }
+
+    public function check_total_weight($course_id){
+        return $this->exam_dao->check_total_weight($course_id);
+    }
+
     public function add_exam($exam) {
         return $this->exam_dao->add_exam($exam);
     }
