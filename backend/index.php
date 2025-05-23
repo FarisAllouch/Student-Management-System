@@ -6,5 +6,6 @@ require 'rest/routes/professor_routes.php';
 require 'rest/routes/student_routes.php';
 require 'rest/routes/professorcourse_routes.php';
 require 'rest/routes/studentcourse_routes.php';
+require 'rest/routes/grade_routes.php';
 
 Flight::start();

@@ -29,11 +29,12 @@ class ProfessorDao extends BaseDao {
     }
 
     public function delete_professor_by_id($id) {
+        $query = "DELETE FROM professorcourse WHERE ProfessorID = :id";
+        $this->execute($query, ['id' => $id]);
+    
         $query = "DELETE FROM professor WHERE id = :id";
-        $this->execute($query, [
-            'id' => $id
-        ]);
-    } 
+        $this->execute($query, ['id' => $id]);
+    }
 
     public function get_professor_by_id($professor_id) {
         return $this->query_unique(

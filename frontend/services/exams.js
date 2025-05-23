@@ -37,6 +37,7 @@ var ExamService = {
         RestClient.get(
             'exams/' + exam_id,
             function (data) {
+                $('#addExamModal').modal("toggle");
                 $("#addExamForm input[name='ExamId']").val(exam_id);
                 $("#addExamForm input[name='ExamName']").val(data.ExamName);
                 $("#addExamForm input[name='Weight']").val(data.Weight);

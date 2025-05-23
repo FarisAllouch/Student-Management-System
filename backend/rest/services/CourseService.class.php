@@ -33,4 +33,8 @@ class CourseService {
     public function edit_course($course) {
         return $this->course_dao->edit_course($course);
     }   
+
+    public function get_course_exams($course_id) {
+        return $this->course_dao->get_course_exams($course_id);
+    }
 }

@@ -33,5 +33,9 @@ class StudentService {
 
     public function edit_student($student) {
         return $this->student_dao->edit_student($student);
-    }   
+    }
+    
+    public function get_course_students($course_id) {
+        return $this->student_dao->get_course_students($course_id);
+    }
 }

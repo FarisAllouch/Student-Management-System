@@ -32,11 +32,33 @@ class CourseDao extends BaseDao {
     }
 
     public function delete_course_by_id($id) {
+        $query = "DELETE FROM coursegrade WHERE StudentCourseId IN (
+            SELECT id FROM studentcourse WHERE CourseID = :id
+        )";
+        $this->execute($query, [
+            'id' => $id
+        ]);
+
+        $query = "DELETE FROM studentcourse WHERE CourseID = :id";
+        $this->execute($query, [
+            'id' => $id
+        ]);
+
+        $query = "DELETE FROM professorcourse WHERE CourseID = :id";
+        $this->execute($query, [
+            'id' => $id
+        ]);
+
+        $query = "DELETE FROM courseexams WHERE CourseId = :id";
+        $this->execute($query, [
+            'id' => $id
+        ]);
+
         $query = "DELETE FROM course WHERE id = :id";
         $this->execute($query, [
             'id' => $id
         ]);
-    } 
+    }
 
     public function get_course_by_id($course_id) {
         return $this->query_unique(
@@ -54,5 +76,10 @@ class CourseDao extends BaseDao {
             'CourseCode' => $course['CourseCode'],
             'id' => $course['id']
         ]);
+    }
+
+    public function get_course_exams($course_id) {
+        $query = "SELECT ExamId as id, ExamName FROM courseexams WHERE CourseId = :course_id";
+        return $this->query($query, ['course_id' => $course_id]);
     }
 }

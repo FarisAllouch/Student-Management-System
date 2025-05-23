@@ -88,7 +88,7 @@
       </div>
     </div>
   </div>
-  
+
 <script>
   ProfessorService.reload_professors_datatable();
   FormValidation.validate("#addProfessorForm", {}, function(data) {
@@ -123,29 +123,22 @@
 
     const professorId = $('#selectedProfessorId').val();
     const courseId = $('#unassignedCoursesSelect').val();
-    const courseName = $('#unassignedCoursesSelect option:selected').text();
 
     RestClient.post('professor-courses/add',{
         ProfessorId: professorId,
         CourseId: courseId
     }, function() {
-        // Remove from unassigned list
         $('#unassignedCoursesSelect option[value="' + courseId + '"]').remove();
         
-        // Add to assigned list
-        $('#assignedCoursesList').append(`
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>${courseName}</span>
-                <button class="btn btn-sm btn-outline-danger remove-course-btn" data-id="${courseId}">Remove</button>
-            </li>
-        `);
+        RestClient.get('professor-courses/assigned/' + professorId, function(data) {
+            ProfessorService.render_assigned_courses(professorId, data);
+        });
     });
   });
 
   $(document).on('click', '.remove-course-btn', function () {
-    const courseId = $(this).data('id');
-    const professorId = $('#selectedProfessorId').val();
-    RestClient.delete(`professor-courses/delete/${professorId}/${courseId}`);
+    let courseId = $(this).attr("data-course-id");
+    let professorId = $(this).attr("data-professor-id");
+    ProfessorService.remove_course(courseId, professorId);
   });
-
 </script>  
