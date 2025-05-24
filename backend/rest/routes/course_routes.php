@@ -8,6 +8,23 @@ Flight::set('student_service', new StudentService());
 
 Flight::group('/courses', function() {
 
+    /**
+    * @OA\Get(
+    *      path="/courses/all",
+    *      tags={"courses"},
+    *      summary="Get all courses",
+    *      @OA\Response(
+    *           response=200,
+    *           description="Array of all courses in the database"
+    *      )
+    * )
+    */
+    Flight::route('GET /all', function() {
+    
+        $data = Flight::get('course_service')->get_all_courses();
+        Flight::json($data, 200);
+    });
+
     Flight::route('GET /', function() {
     
         $payload = Flight::request()->query;
@@ -42,6 +59,27 @@ Flight::group('/courses', function() {
         ], 200);
     });
     
+    /**
+     * @OA\Post(
+     *      path="/courses/add",
+     *      tags={"courses"},
+     *      summary="Add course data to the database",
+     *      @OA\RequestBody(
+     *          description="Course data payload",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"CourseName", "CourseCode"},
+     *              @OA\Property(property="id", type="string", example="", description="Course Id"),
+     *              @OA\Property(property="CourseName", type="string", example="Calculus 1", description="Course Name"),
+     *              @OA\Property(property="CourseCode", type="string", example="IT-201", description="Course Code")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *           response=200,
+     *           description="Course data, or exception if course is not added properly"
+     *      )
+     * )
+     */
     Flight::route('POST /add', function() {
         $payload = Flight::request()->data->getData();
     
@@ -59,7 +97,24 @@ Flight::group('/courses', function() {
         Flight::json(['message' => "You have successfully added the course", 'data' => $course]);
     });
     
-   
+    /**
+     * @OA\DELETE(
+     *      path="/courses/delete/{id}",
+     *      tags={"courses"},
+     *      summary="Delete course by id",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID of the course",
+     *          @OA\Schema(type="number", example=1)
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Deleted course data or 500 status code exception otherwise"
+     *      )
+     * )
+     */
     Flight::route('DELETE /delete/@course_id', function($course_id) {
         
         if ($course_id == NULL || $course_id == '') {
@@ -70,12 +125,47 @@ Flight::group('/courses', function() {
         Flight::json(['message'=> "You have successfully deleted the course!"]);
     });
 
-    
+    /**
+     * @OA\GET(
+     *      path="/courses/{id}",
+     *      tags={"courses"},
+     *      summary="Get course by id",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID of the course",
+     *          @OA\Schema(type="number", example=1)
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Course data, or false if course does not exists"
+     *      )
+     * )
+     */
     Flight::route('GET /@course_id', function($course_id) {
         $course = Flight::get('course_service')->get_course_by_id($course_id);
         Flight::json($course, 200);
     });
-
+    
+    /**
+     * @OA\GET(
+     *      path="/courses/{id}/students",
+     *      tags={"courses"},
+     *      summary="Get students of course by course id",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID of the course",
+     *          @OA\Schema(type="number", example=1)
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Students of course data, or false if course does not exists"
+     *      )
+     * )
+     */
     Flight::route('GET /@course_id/students', function($course_id) {
         $course_students = Flight::get('student_service')->get_course_students($course_id);
         Flight::json($course_students, 200);

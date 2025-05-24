@@ -82,4 +82,9 @@ class CourseDao extends BaseDao {
         $query = "SELECT ExamId as id, ExamName FROM courseexams WHERE CourseId = :course_id";
         return $this->query($query, ['course_id' => $course_id]);
     }
+
+    public function get_all_courses() {
+        $query = "SELECT * FROM course;";
+        return $this->query($query,[]);
+    }
 }

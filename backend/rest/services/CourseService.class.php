@@ -37,4 +37,8 @@ class CourseService {
     public function get_course_exams($course_id) {
         return $this->course_dao->get_course_exams($course_id);
     }
+
+    public function get_all_courses(){
+        return $this->course_dao->get_all_courses();
+    }
 }
