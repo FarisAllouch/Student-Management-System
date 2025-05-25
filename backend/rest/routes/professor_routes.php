@@ -7,6 +7,7 @@ Flight::set('professor_service', new ProfessorService());
 Flight::group('/professors', function(){
 
     Flight::route('POST /add', function() {
+        authorizeRole('admin');
         $payload = Flight::request()->data->getData();
     
         if ($payload['FullName'] == NULL || $payload['FullName'] == '') {
@@ -24,6 +25,7 @@ Flight::group('/professors', function(){
     });
 
     Flight::route('GET /', function() {
+        authorizeRole('admin');
     
         $payload = Flight::request()->query;
     
@@ -56,7 +58,27 @@ Flight::group('/professors', function(){
         ], 200);
     });
 
+    /**
+     * @OA\GET(
+     *      path="/professors/details",
+     *      tags={"professors"},
+     *      summary="Get logged in professor information",
+     *      security={
+     *          {"ApiKey": {}}
+     *      },
+     *      @OA\Response(
+     *          response=200,
+     *          description="Professor details"
+     *      )
+     * )
+     */
+    Flight::route('GET /details', function() {
+        authorizeRole(['professor']);
+        Flight::json(Flight::get('user'));
+    });
+
     Flight::route('DELETE /delete/@professor_id', function($professor_id) {
+        authorizeRole('admin');
         
         if ($professor_id == NULL || $professor_id == '') {
             Flight::halt(500, "You have to provide a professor id!");
@@ -67,8 +89,10 @@ Flight::group('/professors', function(){
     });
 
     Flight::route('GET /@professor_id', function($professor_id) {
+        authorizeRole('admin');
         $professor = Flight::get('professor_service')->get_professor_by_id($professor_id);
     
         Flight::json($professor, 200);
     });
+
 });

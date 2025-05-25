@@ -7,7 +7,7 @@ Flight::set('exam_service', new ExamService());
 Flight::group('/exams', function() {
 
     Flight::route('GET /', function() {
-    
+        authorizeRoles(['admin', 'professor', 'student']);
         $payload = Flight::request()->query;
     
         if (isset($payload['studentId'])) {
@@ -32,6 +32,7 @@ Flight::group('/exams', function() {
     });
 
     Flight::route('POST /add', function(){
+        authorizeRoles(['admin', 'professor']);
         $payload = Flight::request()->data->getData();
 
         if ($payload['ExamName'] == NULL || $payload['ExamName'] == '') {
@@ -51,6 +52,7 @@ Flight::group('/exams', function() {
     });
 
     Flight::route('DELETE /delete/@exam_id', function($exam_id){
+        authorizeRoles(['admin', 'professor', 'student']);
         if ($exam_id == NULL || $exam_id == '') {
             Flight::halt(500, "You have to provide a exam id!");
         }

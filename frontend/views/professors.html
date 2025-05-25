@@ -94,12 +94,10 @@
   FormValidation.validate("#addProfessorForm", {}, function(data) {
     Utils.block_ui("#addProfessorModal .modal-content");
 
-    $.ajax({
-      url: Constants.API_BASE_URL + "professors/add",
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(data),
-      success: function () {
+  RestClient.post(
+    "professors/add",
+    data,
+    function () {
       Utils.unblock_ui("#addProfessorModal .modal-content");
       toastr.success("You have successfully added the professor.");
 
@@ -110,12 +108,14 @@
       const modal = bootstrap.Modal.getInstance(document.getElementById('addProfessorModal'));
       modal.hide();
       document.getElementById("addProfessorForm").reset();
-      },
-      error: function (xhr) {
-        Utils.unblock_ui("#addProfessorModal .modal-content");
-        toastr.error("Error: " + xhr.responseText);
-      }
-    });
+    },
+    function (xhr) {
+      Utils.unblock_ui("#addProfessorModal .modal-content");
+      toastr.error("Error: " + xhr.responseText);
+    },
+    "application/json" 
+  );
+
   });
 
   $('#assignCourseForm').on('submit', function(e){
