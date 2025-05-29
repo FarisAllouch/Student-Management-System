@@ -29,10 +29,19 @@ class StudentDao extends BaseDao {
     }
 
     public function delete_student_by_id($id) {
+        // First delete all grades for this student
+        $query = "DELETE FROM coursegrade WHERE StudentCourseId IN (
+            SELECT id FROM studentcourse WHERE StudentId = :id
+        )";
+        $this->execute($query, ['id' => $id]);
+
+        // Then delete all course enrollments
+        $query = "DELETE FROM studentcourse WHERE StudentId = :id";
+        $this->execute($query, ['id' => $id]);
+
+        // Finally delete the student
         $query = "DELETE FROM student WHERE id = :id";
-        $this->execute($query, [
-            'id' => $id
-        ]);
+        $this->execute($query, ['id' => $id]);
     } 
 
     public function get_student_by_id($student_id) {

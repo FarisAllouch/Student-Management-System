@@ -10,6 +10,7 @@ class ProfessorService {
     }
 
     public function add_professor($professor) {
+        $professor['Password'] = password_hash($professor['Password'], PASSWORD_BCRYPT);
         return $this->professor_dao->add_professor($professor);
     }
 

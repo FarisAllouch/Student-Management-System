@@ -1,0 +1,144 @@
+<section id="professors" class="spapp-section">
+    <h2>Manage Professors</h2>
+    <p>Add, edit, delete professors and assign courses to them.</p>
+    <div id="addProfessor">
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProfessorModal">
+        Add Professor
+      </button>
+    </div>
+  
+    <div id="professorList" class="mt-4">
+      <table id="tbl_professors" class="table">
+        <thead>
+          <tr>
+            <th data-name="action">Actions</th>
+            <th data-name="FullName">Full Name</th>
+            <th data-name="Email">Email</th>
+            <th data-name="Password">Password</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  
+  <div class="modal fade" id="addProfessorModal" tabindex="-1" aria-labelledby="addProfessorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="addProfessorForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addProfessorModalLabel">Add New Professor</h5>
+          </div>
+
+          <div class="modal-body">
+            <input type="hidden" name="id" id="id" />
+
+            <div class="mb-3">
+              <label for="newProfessorName" class="form-label">Full Name</label>
+              <input type="text" class="form-control" name="FullName" id="newProfessorName" placeholder="Full Name" />
+            </div>
+
+            <div class="mb-3">
+              <label for="Email" class="form-label">Email</label>
+              <input type="text" class="form-control" name="Email" id="ProfessorEmail" placeholder="Email" />
+            </div>
+
+            <div class="mb-3">
+              <label for="ProfessorPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" name="Password" id="ProfessorPassword" placeholder="Password" />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="manageCoursesModal" tabindex="-1" aria-labelledby="manageCoursesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="assignCourseForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="manageCoursesModalLabel">Assign Course to Professor</h5>
+          </div>
+  
+          <div class="modal-body">
+            <input type="hidden" name="ProfessorId" id="selectedProfessorId" />
+  
+            <div class="mb-3">
+              <label for="unassignedCoursesSelect" class="form-label">Select Course</label>
+              <select class="form-select" name="CourseId" id="unassignedCoursesSelect" required>
+              </select>
+            </div>
+
+            <hr />
+
+            <div>
+              <label class="form-label">Assigned Courses</label>
+              <ul id="assignedCoursesList" class="list-group">
+              </ul>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Assign Course</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+  ProfessorService.reload_professors_datatable();
+  FormValidation.validate("#addProfessorForm", {}, function(data) {
+    Utils.block_ui("#addProfessorModal .modal-content");
+
+  RestClient.post(
+    "professors/add",
+    data,
+    function () {
+      Utils.unblock_ui("#addProfessorModal .modal-content");
+      toastr.success("You have successfully added the professor.");
+
+      setTimeout(() => {
+        ProfessorService.reload_professors_datatable();
+      }, 500);
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('addProfessorModal'));
+      modal.hide();
+      document.getElementById("addProfessorForm").reset();
+    },
+    function (xhr) {
+      Utils.unblock_ui("#addProfessorModal .modal-content");
+      toastr.error("Error: " + xhr.responseText);
+    },
+    "application/json" 
+  );
+
+  });
+
+  $('#assignCourseForm').on('submit', function(e){
+    e.preventDefault();
+
+    const professorId = $('#selectedProfessorId').val();
+    const courseId = $('#unassignedCoursesSelect').val();
+
+    RestClient.post('professor-courses/add',{
+        ProfessorId: professorId,
+        CourseId: courseId
+    }, function() {
+        $('#unassignedCoursesSelect option[value="' + courseId + '"]').remove();
+        
+        RestClient.get('professor-courses/assigned/' + professorId, function(data) {
+            ProfessorService.render_assigned_courses(professorId, data);
+        });
+    });
+  });
+
+  $(document).on('click', '.remove-course-btn', function () {
+    let courseId = $(this).attr("data-course-id");
+    let professorId = $(this).attr("data-professor-id");
+    ProfessorService.remove_course(courseId, professorId);
+  });
+</script>  

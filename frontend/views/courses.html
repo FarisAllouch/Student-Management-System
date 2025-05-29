@@ -1,97 +1,198 @@
-<div class="container-fluid">
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-header bg-info text-white">
-            <h5 class="card-title mb-0">Select Academic Year and Semester</h5>
+<section id="my-courses" class="spapp-section">
+  <h2>My Courses</h2>
+  <p>Manage your courses, attendance, and assign grades to students.</p>
+
+  <div id="addCourse">
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+      Add Course
+    </button>
+  </div>
+
+  <div id="courseList" class="mt-4">
+    <table id="tbl_courses" class="table">
+      <thead>
+        <tr>
+          <th data-name="action">Actions</th>
+          <th data-name="CourseName">Course Name</th>
+          <th data-name="CourseCode">Course Code</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+  <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="addCourseForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addCourseModalLabel">Add New Course</h5>
           </div>
-          <div class="card-body">
+          <div class="modal-body">
+            <input type="hidden" name="id" id="id" />
             <div class="mb-3">
-              <label for="academicYear" class="form-label">Academic Year</label>
-              <select class="form-select" id="academicYear">
-                <option value="2024-2025">2024-2025</option>
-                <option value="2023-2024">2023-2024</option>
-                <option value="2022-2023">2022-2023</option>
-              </select>
+              <label for="newCourseName" class="form-label">Course Name</label>
+              <input type="text" class="form-control" name="CourseName" id="newCourseName" placeholder="Course name" required />
             </div>
-  
             <div class="mb-3">
-              <label for="semester" class="form-label">Semester</label>
-              <select class="form-select" id="semester">
-                <option value="fall">Fall</option>
-                <option value="spring">Spring</option>
-              </select>
+              <label for="CourseCode" class="form-label">Course Code</label>
+              <input type="text" class="form-control" name="CourseCode" id="CourseCode" placeholder="Course Code" required />
             </div>
-  
-            <button id="loadCourses" class="btn btn-primary w-100">Load Courses</button>
           </div>
-        </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
       </div>
-  
-      <div class="col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-header bg-dark text-white">
-            <h5 class="card-title mb-0">Registered Courses</h5>
-          </div>
-          <div class="card-body">
-            <ul id="coursesList" class="list-group">
-            </ul>
+    </div>
+  </div>
+
+  <div class="modal fade" id="manageExamsModal" tabindex="-1" aria-labelledby="manageExamsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Exams for <span id="modalCourseName"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="id" />
+          <table id="tbl_exams" class="table">
+            <thead>
+              <tr>
+                <th data-name="ExamName">Exam Name</th>
+                <th data-name="Weight">Weight (%)</th>
+                <th data-name="action">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div id="addExamBtnWrapper" class="mt-3">
+            <button type="button" class="btn btn-success" id="btnOpenAddExam">
+              Add Exam
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="enrolled-students-modal" tabindex="-1" aria-labelledby="enrolledStudentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="enrolledStudentsModalLabel">Enrolled Students</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul id="enrolled-students-list" class="list-group"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
   
-  <script>
-    const coursesData = {
-      "2024-2025": {
-        fall: [
-          { name: "Mathematics 101", instructor: "Dr. John Smith" },
-          { name: "Physics 101", instructor: "Prof. Alice White" },
-          { name: "Computer Science 101", instructor: "Dr. James Brown" }
-        ],
-        spring: [
-          { name: "Economics 101", instructor: "Dr. Emma Green" },
-          { name: "Biology 101", instructor: "Prof. Michael Black" }
-        ]
-      },
-      "2023-2024": {
-        fall: [
-          { name: "Statistics 101", instructor: "Dr. Sarah Blue" },
-          { name: "Chemistry 101", instructor: "Prof. Peter Grey" }
-        ],
-        spring: [
-          { name: "Psychology 101", instructor: "Dr. Linda White" },
-          { name: "History 101", instructor: "Prof. Thomas Yellow" }
-        ]
-      },
-      "2022-2023": {
-        fall: [
-          { name: "Philosophy 101", instructor: "Dr. Mark Red" },
-          { name: "Literature 101", instructor: "Prof. Mary Pink" }
-        ],
-        spring: [
-          { name: "Sociology 101", instructor: "Dr. George Brown" }
-        ]
-      }
-    };
-  
-    $("#loadCourses").click(function() {
-      const selectedYear = $("#academicYear").val();
-      const selectedSemester = $("#semester").val();
-      
-      const selectedCourses = coursesData[selectedYear][selectedSemester];
-      
-      $("#coursesList").empty();
-  
-      selectedCourses.forEach(course => {
-        const courseItem = `
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            ${course.name} 
-            <span class="badge bg-secondary">${course.instructor}</span>
-          </li>
-        `;
-        $("#coursesList").append(courseItem);
-      });
+  <div class="modal fade" id="addExamModal" tabindex="-1" aria-labelledby="addExamModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="addExamForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addExamModalLabel">Add New Exam</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <input type="hidden" name="CourseId" id="examCourseId" />
+          <input type="hidden" name="ExamId" id="examId" />
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="examNameInput" class="form-label">Exam Name</label>
+              <input type="text" name="ExamName" id="examNameInput" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="weightInput" class="form-label">Weight (%)</label>
+              <input type="number" name="Weight" id="weightInput" class="form-control" min="0" max="100" step="0.1" required />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success" id="btnSubmitExam">Add Exam</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  $(document).ready(function() {
+    const user = Utils.get_from_localstorage("user");
+    if (!user || user.role !== "admin") {
+      $("#addCourse").hide();
+    }
+
+    CourseService.reload_courses_datatable();
+
+    FormValidation.validate("#addCourseForm", {}, function(data) {
+      Utils.block_ui("#addCourseModal .modal-content");
+
+      RestClient.post(
+        "courses/add",
+        data,
+        function () {
+          Utils.unblock_ui("#addCourseModal .modal-content");
+          toastr.success("You have successfully added the course.");
+
+          setTimeout(() => {
+            CourseService.reload_courses_datatable();
+          }, 500);
+
+          const modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
+          modal.hide();
+          document.getElementById("addCourseForm").reset();
+        },
+        function (xhr) {
+          Utils.unblock_ui("#addCourseModal .modal-content");
+          toastr.error("Error: " + xhr.responseText);
+        }
+      );
     });
-  </script>
+
+    document.getElementById("btnOpenAddExam").addEventListener("click", function () {
+      const addExamModal = new bootstrap.Modal(document.getElementById("addExamModal"));
+      addExamModal.show();
+    });
+
+    document.getElementById("addExamForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const data = {
+        ExamName: document.querySelector("#addExamForm input[name='ExamName']").value,
+        Weight: parseFloat(document.querySelector("#addExamForm input[name='Weight']").value),
+        CourseId: document.getElementById("examCourseId").value,
+        ExamId: document.getElementById("examId").value || ''
+      };
+
+      Utils.block_ui("#manageExamsModal .modal-content");
+
+      RestClient.post(
+        "exams/add",
+        data,
+        function () {
+          Utils.unblock_ui("#manageExamsModal .modal-content");
+          toastr.success("You have successfully added the exam.");
+
+          const courseId = document.getElementById("examCourseId").value;
+
+          setTimeout(() => {
+            ExamService.reload_exams_datatable(courseId);
+          }, 500);
+
+          const addExamModal = bootstrap.Modal.getInstance(document.getElementById("addExamModal"));
+          addExamModal.hide();
+
+          document.getElementById("addExamForm").reset();
+        },
+        function (xhr) {
+          Utils.unblock_ui("#manageExamsModal .modal-content");
+          toastr.error("Error: " + xhr.responseText);
+        },
+        "application/json"
+      );
+    });
+  });
+</script>

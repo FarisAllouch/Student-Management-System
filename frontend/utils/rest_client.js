@@ -3,10 +3,20 @@ var RestClient = {
         $.ajax({
             url: Constants.API_BASE_URL + url,
             type: "GET",
+            beforeSend: function(xhr) {
+                if(Utils.get_from_localstorage("user")){
+                    const token = Utils.get_from_localstorage("user").token;
+                    console.log("Sending token:", token);
+                    xhr.setRequestHeader(
+                        "Authentication",
+                        token
+                    );
+                }
+            },
             success: function (response) {
                 if (callback) callback(response);
             },
-            error: function (jqXHR, textStatus, errorThrown) {
+            fail: function (jqXHR, textStatus, errorThrown) {
                 if (error_callback) error_callback(jqXHR);
             }
         });
@@ -15,7 +25,17 @@ var RestClient = {
         $.ajax({
             url: Constants.API_BASE_URL + url,
             type: method,
-            data: data
+            data: data,
+            beforeSend: function(xhr) {
+                if(Utils.get_from_localstorage("user")){
+                    const token = Utils.get_from_localstorage("user").token;
+                    console.log("Sending token:", token);
+                    xhr.setRequestHeader(
+                        "Authentication",
+                        token
+                    );
+                }
+            }
         })
             .done(function (response, status, jqXHR) {
                 if (callback) callback(response);

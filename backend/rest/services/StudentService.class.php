@@ -10,6 +10,7 @@ class StudentService {
     }
 
     public function add_student($student) {
+        $student['Password'] = password_hash($student['Password'], PASSWORD_BCRYPT);
         return $this->student_dao->add_student($student);
     }
 
