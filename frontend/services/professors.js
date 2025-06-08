@@ -7,7 +7,6 @@ var ProfessorService = {
                 { data: "action"},
                 { data: "FullName"},
                 { data: "Email"},
-                { data: "Password"}
             ]
         );
     },

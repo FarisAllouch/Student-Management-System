@@ -22,6 +22,26 @@ class CourseService {
         ];
     }
 
+    public function get_courses_paginated_student($offset, $limit, $search, $order_column, $order_direction, $studentId){
+        $count = $this->course_dao->count_courses_paginated_student($search, $studentId)['Count'];
+        $rows = $this->course_dao->get_courses_paginated_student($offset, $limit, $search, $order_column, $order_direction, $studentId);
+        
+        return [
+            'count' => $count,
+            'data' => $rows
+        ];
+    }
+
+    public function get_courses_paginated_professor($offset, $limit, $search, $order_column, $order_direction, $professorId){
+        $count = $this->course_dao->count_courses_paginated_professor($search, $professorId)['Count'];
+        $rows = $this->course_dao->get_courses_paginated_professor($offset, $limit, $search, $order_column, $order_direction, $professorId);
+        
+        return [
+            'count' => $count,
+            'data' => $rows
+        ];
+    }
+
     public function delete_course_by_id ($course_id) {   
         $this->course_dao->delete_course_by_id($course_id);
     }

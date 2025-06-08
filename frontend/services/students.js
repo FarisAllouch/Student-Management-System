@@ -8,7 +8,6 @@ var StudentService = {
                 { data: "FirstName"},
                 { data: "LastName"},
                 { data: "Email"},
-                { data: "Password"}
             ]
         );
     },
