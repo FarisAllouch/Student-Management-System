@@ -3,7 +3,7 @@ var ExamService = {
     reload_exams_datatable : function (course_id) {
         Utils.get_datatable(
             "tbl_exams",
-            Constants.API_BASE_URL + "exams?CourseId=" + course_id,
+            Constants.get_api_base_url() + "exams?CourseId=" + course_id,
             [
                 { data: "ExamName"},
                 { data: "Weight"},
