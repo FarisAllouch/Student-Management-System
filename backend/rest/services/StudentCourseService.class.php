@@ -17,6 +17,10 @@ class StudentCourseService {
         return $this->studentcourse_dao->get_studentcourse_ass($student_id);
     }
 
+    public function get_studentcourse_ass_prof($student_id, $professor_id) {
+        return $this->studentcourse_dao->get_studentcourse_ass_prof($student_id, $professor_id);
+    }
+
     public function add_studentcourse($course){
         $this->studentcourse_dao->add_studentcourse($course['StudentId'], $course['CourseId']);
         return ['message' => 'Course assigned successfully'];

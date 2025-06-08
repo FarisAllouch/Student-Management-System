@@ -2,6 +2,7 @@ var Utils = {
     init_spapp : function () {
         var app = $.spapp({
             templateDir: "./frontend/views/",
+            defaultView: "#courses"
         });
         app.run();
     },

@@ -27,8 +27,14 @@ Flight::group('/student-courses', function(){
     });
 
     Flight::route('GET /assigned/@student_id', function($student_id){
+        $user = Flight::get('user');
+        $professor_id = $user->id;
         authorizeRoles(['admin', 'professor']);
-        $data = Flight::get('studentcourse_service')->get_studentcourse_ass($student_id);
+        if($user->role === 'professor') {
+            $data = Flight::get('studentcourse_service')->get_studentcourse_ass_prof($student_id, $professor_id);
+        } else {
+            $data = Flight::get('studentcourse_service')->get_studentcourse_ass($student_id);
+        }
         
         Flight::json($data, 200);
     });

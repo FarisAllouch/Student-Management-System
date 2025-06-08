@@ -1,56 +1,60 @@
-<section id="Students" class="spapp-section">
-  <h2>Manage Students</h2>
-  <p>Add, edit, delete Students and assign courses to them.</p>
+<section id="Students" class="spapp-section container py-5">
+  <div class="mb-4 text-center">
+    <h2 class="fw-bold text-primary">👩‍🎓 Manage Students</h2>
+    <p class="text-muted">Add, edit, delete students and assign courses to them.</p>
+  </div>
 
   <div id="addStudent">
-    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal" id="btnAddStudent">
-      Add Student
+    <button type="button" class="btn btn-success shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#addStudentModal" id="btnAddStudent">
+      ➕ Add Student
     </button>
   </div>
 
-  <div id="StudentList" class="mt-4">
-    <table id="tbl_students" class="table">
-      <thead>
-        <tr>
-          <th data-name="action">Actions</th>
-          <th data-name="FirstName">First Name</th>
-          <th data-name="LastName">Last Name</th>
-          <th data-name="Email">Email</th>
-          <th data-name="Password">Password</th>
-        </tr>
-      </thead>
-    </table>
+  <div id="StudentList" class="card shadow-sm">
+    <div class="card-body p-0 overflow-auto">
+      <table id="tbl_students" class="table table-striped align-middle mb-0 table-hover">
+        <thead class="table-light">
+          <tr>
+            <th data-name="action" class="text-center" style="min-width:100px;">Actions</th>
+            <th data-name="FirstName">First Name</th>
+            <th data-name="LastName">Last Name</th>
+            <th data-name="Email">Email</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
   </div>
 
   <!-- Add Student Modal -->
   <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+      <div class="modal-content shadow-sm">
         <form id="addStudentForm">
-          <div class="modal-header">
+          <div class="modal-header bg-success text-white">
             <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <input type="hidden" name="id" id="id" />
             <div class="mb-3">
               <label for="FirstName" class="form-label">First Name</label>
-              <input type="text" class="form-control" name="FirstName" id="FirstName" placeholder="First Name" />
+              <input type="text" class="form-control" name="FirstName" id="FirstName" placeholder="First Name" required />
             </div>
             <div class="mb-3">
               <label for="LastName" class="form-label">Last Name</label>
-              <input type="text" class="form-control" name="LastName" id="LastName" placeholder="Last Name" />
+              <input type="text" class="form-control" name="LastName" id="LastName" placeholder="Last Name" required />
             </div>
             <div class="mb-3">
-              <label for="Email" class="form-label">Email</label>
-              <input type="email" class="form-control" name="Email" id="StudentEmail" placeholder="Email" />
+              <label for="StudentEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" name="Email" id="StudentEmail" placeholder="Email" required />
             </div>
             <div class="mb-3">
               <label for="StudentPassword" class="form-label">Password</label>
-              <input type="password" class="form-control" name="Password" id="StudentPassword" placeholder="Password" />
+              <input type="password" class="form-control" name="Password" id="StudentPassword" placeholder="Password" required />
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
           </div>
         </form>
       </div>
@@ -59,28 +63,27 @@
 
   <!-- Manage Courses Modal -->
   <div class="modal fade" id="manageCoursesModal" tabindex="-1" aria-labelledby="manageCoursesModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+      <div class="modal-content shadow-sm">
         <form id="assignCourseForm">
-          <div class="modal-header">
+          <div class="modal-header bg-primary text-white">
             <h5 class="modal-title" id="manageCoursesModalLabel">Assign Course to Student</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <input type="hidden" name="StudentId" id="selectedStudentId" />
             <div class="mb-3">
               <label for="unassignedCoursesSelect" class="form-label">Select Course</label>
-              <select class="form-select" name="CourseId" id="unassignedCoursesSelect" required>
-              </select>
+              <select class="form-select" name="CourseId" id="unassignedCoursesSelect" required></select>
             </div>
             <hr />
             <div>
               <label class="form-label">Assigned Courses</label>
-              <ul id="assignedCoursesList" class="list-group">
-              </ul>
+              <ul id="assignedCoursesList" class="list-group"></ul>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Assign Course</button>
+            <button type="submit" class="btn btn-primary w-100">Assign Course</button>
           </div>
         </form>
       </div>
@@ -89,23 +92,22 @@
 
   <!-- Manage Grades Modal -->
   <div class="modal fade" id="manageGradesModal" tabindex="-1" aria-labelledby="manageGradesModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+      <div class="modal-content shadow-sm">
         <form id="assignGradeForm">
-          <div class="modal-header">
+          <div class="modal-header bg-info text-white">
             <h5 class="modal-title" id="manageGradesModalLabel">Manage Student Grades</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <input type="hidden" name="StudentId" id="selectedStudentId" />
             <div class="mb-3">
               <label for="courseSelect" class="form-label">Select Course</label>
-              <select class="form-select" name="CourseId" id="courseSelect" required>
-              </select>
+              <select class="form-select" name="CourseId" id="courseSelect" required></select>
             </div>
             <div class="mb-3">
               <label for="examSelect" class="form-label">Select Exam</label>
-              <select class="form-select" name="ExamId" id="examSelect" required>
-              </select>
+              <select class="form-select" name="ExamId" id="examSelect" required></select>
             </div>
             <div class="mb-3">
               <label for="grade" class="form-label">Grade</label>
@@ -114,169 +116,199 @@
             <hr />
             <div>
               <label class="form-label">Current Grades</label>
-              <ul id="gradesList" class="list-group">
-              </ul>
+              <ul id="gradesList" class="list-group"></ul>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Submit Grade</button>
+            <button type="submit" class="btn btn-primary w-100">Submit Grade</button>
           </div>
         </form>
       </div>
     </div>
   </div>
+</section>
 
-<script>
-$(document).ready(function() {
-  const user = Utils.get_from_localstorage("user");
-  if (!user || user.role !== "admin") {
-    $("#addStudent").hide();  // Sakrij dugme ako nije admin
+<style>
+  /* Horizontal scroll for table on small screens */
+  #StudentList .card-body {
+    overflow-x: auto;
   }
 
-  StudentService.reload_students_datatable();
+  /* Fix min width for action column */
+  th[data-name="action"] {
+    min-width: 100px;
+  }
 
-  FormValidation.validate("#addStudentForm", {}, function(data) {
-    Utils.block_ui("#addStudentModal .modal-content");
+  /* Modal inputs and selects full width */
+  .modal-body input,
+  .modal-body select {
+    width: 100%;
+    box-sizing: border-box;
+  }
 
-    RestClient.post(
-      "students/add",
-      data,
-      function () {
-        Utils.unblock_ui("#addStudentModal .modal-content");
-        toastr.success("You have successfully added the Student.");
+  /* On small screens, make add button full width */
+  @media (max-width: 576px) {
+    #addStudent button {
+      width: 100%;
+    }
 
-        setTimeout(() => {
-          StudentService.reload_students_datatable();
-        }, 500);
+    /* Modal dialog width adjustment on small screens */
+    .modal-dialog {
+      max-width: 95%;
+      margin: 1.75rem auto;
+    }
 
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
-        modal.hide();
-        document.getElementById("addStudentForm").reset();
-      },
-      function (xhr) {
-        Utils.unblock_ui("#addStudentModal .modal-content");
-        toastr.error("Error: " + xhr.responseText);
-      },
-      "application/json"
-    );
+    .modal-footer button {
+      width: 100%;
+    }
+  }
+</style>
 
-  });
+<script>
+  $(document).ready(function() {
+    const user = Utils.get_from_localstorage("user");
+    if (!user || user.role !== "admin") {
+      $("#addStudent").hide();
+    }
 
-  $('#assignCourseForm').on('submit', function(e){
-    e.preventDefault();
+    StudentService.reload_students_datatable();
 
-    const studentId = $('#selectedStudentId').val();
-    const courseId = $('#unassignedCoursesSelect').val();
+    FormValidation.validate("#addStudentForm", {}, function(data) {
+      Utils.block_ui("#addStudentModal .modal-content");
 
-    RestClient.post('student-courses/add',{
-      StudentId: studentId,
-      CourseId: courseId
-    }, function() {
-      $('#unassignedCoursesSelect option[value="' + courseId + '"]').remove();
+      RestClient.post(
+        "students/add",
+        data,
+        function () {
+          Utils.unblock_ui("#addStudentModal .modal-content");
+          toastr.success("You have successfully added the Student.");
+
+          setTimeout(() => {
+            StudentService.reload_students_datatable();
+          }, 500);
+
+          const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
+          modal.hide();
+          document.getElementById("addStudentForm").reset();
+        },
+        function (xhr) {
+          Utils.unblock_ui("#addStudentModal .modal-content");
+          toastr.error("Error: " + xhr.responseText);
+        },
+        "application/json"
+      );
+
+    });
+
+    $('#assignCourseForm').on('submit', function(e){
+      e.preventDefault();
+
+      const studentId = $('#selectedStudentId').val();
+      const courseId = $('#unassignedCoursesSelect').val();
+
+      RestClient.post('student-courses/add',{
+        StudentId: studentId,
+        CourseId: courseId
+      }, function() {
+        $('#unassignedCoursesSelect option[value="' + courseId + '"]').remove();
+
+        RestClient.get('student-courses/assigned/' + studentId, function(data) {
+          StudentService.render_assigned_courses(studentId, data);
+        });
+      });
+    });
+
+    $(document).on('click', '.remove-course-btn', function () {
+      let courseId = $(this).attr("data-course-id");
+      let studentId = $(this).attr("data-student-id");
+
+      if (!courseId || !studentId) {
+        toastr.error("Error: Missing course or student ID");
+        return;
+      }
+
+      if (confirm("Do you want to remove this course from the student?")) {
+        RestClient.delete(
+          `student-courses/delete/${studentId}/${courseId}`,
+          null,
+          function(data) {
+            toastr.success("Course removed successfully");
+
+            RestClient.get('student-courses/assigned/' + studentId, function(data) {
+              StudentService.render_assigned_courses(studentId, data);
+            });
+          }
+        );
+      }
+    });
+
+    $(document).on('click', '.remove-grade-btn', function() {
+      const gradeId = $(this).data('grade-id');
+      StudentService.remove_grade(gradeId);
+    });
+
+    $('#tbl_students').on('draw.dt', function() {
+      $('.btn-group').each(function() {
+        const studentId = $(this).find('button').first().attr('onclick').match(/\d+/)[0];
+        if (user && user.role === "admin") {
+          $(this).append(`
+            <button type="button" class="btn btn-info" onclick="StudentService.manage_courses(${studentId})">Manage Courses</button>
+          `);
+        }
+        $(this).append(`
+          <button type="button" class="btn btn-primary manage-grades-btn" data-student-id="${studentId}">Manage Grades</button>
+        `);
+      });
+    });
+
+    $('#assignGradeForm').on('submit', function(e) {
+      e.preventDefault();
+
+      const data = {
+        StudentId: $('#selectedStudentId').val(),
+        CourseId: $('#courseSelect').val(),
+        ExamId: $('#examSelect').val(),
+        Grade: $('#grade').val()
+      };
+
+      RestClient.post('grades/add', data, function() {
+        toastr.success("Grade assigned successfully");
+        const studentId = $('#selectedStudentId').val();
+        const courseId = $('#courseSelect').val();
+        const ExamId = $('#examSelect').val();
+        $('#examSelect option[value="' + ExamId + '"]').remove();
+
+        StudentService.load_student_grades(studentId, courseId);
+        $('#grade').val('');
+      });
+    });
+
+    $(document).on('click', '.manage-grades-btn', function() {
+      const studentId = $(this).data('student-id');
+      $('#selectedStudentId').val(studentId);
 
       RestClient.get('student-courses/assigned/' + studentId, function(data) {
-        StudentService.render_assigned_courses(studentId, data);
-      });
-    });
-  });
+        const courseSelect = $('#courseSelect');
+        courseSelect.empty();
 
-  $(document).on('click', '.remove-course-btn', function () {
-    let courseId = $(this).attr("data-course-id");
-    let studentId = $(this).attr("data-student-id");
+        data.forEach(course => {
+          courseSelect.append(`<option value="${course.id}">${course.CourseName}</option>`);
+        });
 
-    if (!courseId || !studentId) {
-      toastr.error("Error: Missing course or student ID");
-      return;
-    }
-
-    if (confirm("Do you want to remove this course from the student?")) {
-      RestClient.delete(
-        `student-courses/delete/${studentId}/${courseId}`,
-        null,
-        function(data) {
-          toastr.success("Course removed successfully");
-
-          // Reload the assigned courses list using the shared function
-          RestClient.get('student-courses/assigned/' + studentId, function(data) {
-            StudentService.render_assigned_courses(studentId, data);
-          });
+        if (data.length > 0) {
+          StudentService.load_course_exams(data[0].id);
+          StudentService.load_student_grades(studentId, data[0].id);
         }
-      );
-    }
-  });
 
-  $(document).on('click', '.remove-grade-btn', function() {
-    const gradeId = $(this).data('grade-id');
-    StudentService.remove_grade(gradeId);
-  });
-
-  $('#tbl_students').on('draw.dt', function() {
-    $('.btn-group').each(function() {
-      const studentId = $(this).find('button').first().attr('onclick').match(/\d+/)[0];
-      if (user && user.role === "admin") {
-        $(this).append(`
-          <button type="button" class="btn btn-info" onclick="StudentService.manage_courses(${studentId})">Manage Courses</button>
-        `);
-      }
-      $(this).append(`
-        <button type="button" class="btn btn-primary manage-grades-btn" data-student-id="${studentId}">Manage Grades</button>
-      `);
-    });
-  });
-
-  $('#assignGradeForm').on('submit', function(e) {
-    e.preventDefault();
-
-    const data = {
-      StudentId: $('#selectedStudentId').val(),
-      CourseId: $('#courseSelect').val(),
-      ExamId: $('#examSelect').val(),
-      Grade: $('#grade').val()
-    };
-
-    RestClient.post('grades/add', data, function() {
-      toastr.success("Grade assigned successfully");
-      // Reload grades list
-      const studentId = $('#selectedStudentId').val();
-      const courseId = $('#courseSelect').val();
-      const ExamId = $('#examSelect').val();
-      $('#examSelect option[value="' + ExamId + '"]').remove();
-
-      StudentService.load_student_grades(studentId, courseId);
-      // Reset form
-      $('#grade').val('');
-    });
-  });
-
-  $(document).on('click', '.manage-grades-btn', function() {
-    const studentId = $(this).data('student-id');
-    $('#selectedStudentId').val(studentId);
-
-    // Load student's courses
-    RestClient.get('student-courses/assigned/' + studentId, function(data) {
-      const courseSelect = $('#courseSelect');
-      courseSelect.empty();
-
-      data.forEach(course => {
-        courseSelect.append(`<option value="${course.id}">${course.CourseName}</option>`);
+        $('#manageGradesModal').modal('show');
       });
+    });
 
-      if (data.length > 0) {
-        // Load exams for first course
-        StudentService.load_course_exams(data[0].id);
-        // Load grades for first course
-        StudentService.load_student_grades(studentId, data[0].id);
-      }
-
-      $('#manageGradesModal').modal('show');
+    $('#courseSelect').on('change', function() {
+      const studentId = $('#selectedStudentId').val();
+      const courseId = $(this).val();
+      StudentService.load_course_exams(courseId);
+      StudentService.load_student_grades(studentId, courseId);
     });
   });
-
-  $('#courseSelect').on('change', function() {
-    const studentId = $('#selectedStudentId').val();
-    const courseId = $(this).val();
-    StudentService.load_course_exams(courseId);
-    StudentService.load_student_grades(studentId, courseId);
-  });
-});
 </script>

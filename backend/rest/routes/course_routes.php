@@ -37,7 +37,7 @@ Flight::group('/courses', function() {
     });
 
     Flight::route('GET /', function() {
-        authorizeRoles(['admin', 'professor', 'student']);
+        authorizeRoles(['professor', 'student', 'admin']);
         $user = Flight::get('user');
 
         $payload = Flight::request()->query;
@@ -51,7 +51,15 @@ Flight::group('/courses', function() {
             'order_direction' => $payload['order'][0]['dir']
         ];
 
-        $data = Flight::get('course_service')->get_courses_paginated($params['start'], $params['limit'], $params['search'], $params['order_column'], $params['order_direction']);
+        if ($user->role === 'student') {
+            $params['studentId'] = $user->id;
+            $data = Flight::get('course_service')->get_courses_paginated_student($params['start'], $params['limit'], $params['search'], $params['order_column'], $params['order_direction'], $params['studentId']);
+        } elseif ($user->role === 'professor') {
+            $params['professorId'] = $user->id;
+            $data = Flight::get('course_service')->get_courses_paginated_professor($params['start'], $params['limit'], $params['search'], $params['order_column'], $params['order_direction'], $params['professorId']);
+        } else {
+            $data = Flight::get('course_service')->get_courses_paginated($params['start'], $params['limit'], $params['search'], $params['order_column'], $params['order_direction']);
+        }
 
         foreach ($data['data'] as $id => $course) {
             $buttons = '<div class="btn-group" role="group" aria-label="Actions">';
@@ -62,6 +70,11 @@ Flight::group('/courses', function() {
             }
             if ($user->role === 'admin' || $user->role === 'professor') {
                 $buttons .= '<button type="button" class="btn btn-info" onclick="ExamService.manage_exams('.$course['id'] .')">Manage Exams</button>';
+                $buttons .= '</div>';
+            }
+
+            if ($user->role === 'student') {
+                $buttons .= '<button type="button" class="btn btn-info" onclick="StudentService.load_student_grades(' . $user->id . ', ' . $course['id'] . ')">See Grades</button>';
                 $buttons .= '</div>';
             }
 

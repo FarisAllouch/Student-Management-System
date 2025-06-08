@@ -20,6 +20,32 @@ class CourseDao extends BaseDao {
         ]);
     }
 
+    public function count_courses_paginated_student($search, $studentId) {
+        $query = "SELECT COUNT(*) AS Count
+                FROM course c
+                INNER JOIN studentcourse sc ON c.id = sc.CourseId
+                WHERE sc.StudentId = :studentId
+                AND LOWER(c.CourseName) LIKE CONCAT('%', :search, '%')";
+
+        return $this->query_unique($query, [
+            'studentId' => $studentId,
+            'search' => strtolower($search)
+        ]);
+    }
+
+    public function count_courses_paginated_professor($search, $professorId) {
+        $query = "SELECT COUNT(*) AS Count
+                FROM course c
+                INNER JOIN professorcourse pc ON c.id = pc.CourseId
+                WHERE pc.ProfessorId = :professorId
+                AND LOWER(c.CourseName) LIKE CONCAT('%', :search, '%')";
+
+        return $this->query_unique($query, [
+            'professorId' => $professorId,
+            'search' => strtolower($search)
+        ]);
+    }
+
     public function get_courses_paginated($offset, $limit, $search, $order_column, $order_direction) {
         $query = "SELECT *
                   FROM course 
@@ -27,6 +53,36 @@ class CourseDao extends BaseDao {
                   ORDER BY {$order_column} {$order_direction}
                   LIMIT {$offset}, {$limit}";
         return $this->query($query, [
+            'search' => $search
+        ]);
+    }
+
+    public function get_courses_paginated_student($offset, $limit, $search, $order_column, $order_direction, $studentId) {
+        $query = "SELECT c.*
+                FROM course c
+                INNER JOIN studentcourse sc ON c.id = sc.CourseId
+                WHERE sc.StudentId = :studentId
+                AND c.CourseName LIKE CONCAT('%', :search, '%')
+                ORDER BY {$order_column} {$order_direction}
+                LIMIT {$offset}, {$limit}";
+
+        return $this->query($query, [
+            'studentId' => $studentId,
+            'search' => $search
+        ]);
+    }
+
+    public function get_courses_paginated_professor($offset, $limit, $search, $order_column, $order_direction, $professorId) {
+        $query = "SELECT c.*
+                FROM course c
+                INNER JOIN professorcourse sc ON c.id = sc.CourseId
+                WHERE sc.ProfessorId = :professorId
+                AND c.CourseName LIKE CONCAT('%', :search, '%')
+                ORDER BY {$order_column} {$order_direction}
+                LIMIT {$offset}, {$limit}";
+
+        return $this->query($query, [
+            'professorId' => $professorId,
             'search' => $search
         ]);
     }
